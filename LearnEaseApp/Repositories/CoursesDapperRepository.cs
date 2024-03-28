@@ -2,10 +2,11 @@ using System.Data.SqlClient;
 using Dapper;
 using LearnEaseApp.Models;
 using LearnEaseApp.ORMs;
+using LearnEaseApp.Repositories.Interfaces;
 
 namespace LearnEaseApp.Repositories;
 
-public class CoursesDapperRepository
+public class CoursesDapperRepository : ICourseRepository
 {
     public readonly string connectionString;
 

@@ -9,7 +9,7 @@ public interface ICourseRepository
 
     Task<Course> GetById(int id);
 
-    Task<int> Create(CourseORM course);
+    Task Create(CourseORM course);
 
     Task<int> DeleteById(int id);
 }
