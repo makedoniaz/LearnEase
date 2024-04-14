@@ -8,7 +8,7 @@ namespace LearnEase.Models;
 
         public string? Description { get; set; }
 
-        public int AmountOfLectures { get; set; }
+        public int? AmountOfLectures { get; set; }
 
         public DateTime? CreationDate { get; set; }
     }
