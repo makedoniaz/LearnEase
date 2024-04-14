@@ -1,57 +1,57 @@
 [
     {
-        "id":1,
+        "id":0,
         "Name":"Creative Writing Workshop",
         "Description":"Unleash your imagination and hone your writing skills through guided exercises and constructive feedback sessions.",
-        "AmountOfLectures":76,"CreationDate":"3/24/2024"
+        "AmountOfLectures":76,"CreationDate":"2023-06-25T19:45:15Z"
     },
     {
-        "id":2,
+        "id":1,
         "Name":"Photography Basics",
         "Description":"Learn the fundamentals of photography, including composition, lighting, and camera settings, to capture stunning images.",
         "AmountOfLectures":56,
-        "CreationDate":"4/21/2023"
+        "CreationDate":"2023-12-01T13:41:11Z"
     },
     {
-        "id":3,
+        "id":2,
         "Name":"Introduction to Python Programming",
         "Description":"Dive into the world of programming with Python, covering basic syntax, data structures, and algorithmic thinking.",
         "AmountOfLectures":67,
-        "CreationDate":"6/4/2023"
+        "CreationDate":"2023-12-12T11:36:44Z"
     },
     {
-        "id":4,
+        "id":3,
         "Name":"Healthy Cooking for Busy Lives",
         "Description":"Discover quick and nutritious recipes, meal planning strategies, and kitchen hacks for maintaining a healthy lifestyle on a tight schedule.",
         "AmountOfLectures":100,
-        "CreationDate":"10/20/2023"
+        "CreationDate":"2023-04-17T04:35:51Z"
     },
     {
-        "id":5,
+        "id":4,
         "Name":"Graphic Design for Beginners",
         "Description":"Get hands-on experience with design software and principles, creating visual content for both print and digital media.",
         "AmountOfLectures":1,
-        "CreationDate":"1/14/2024"
+        "CreationDate":"2023-12-01T09:41:20Z"
     },
     {
-        "id":6,
+        "id":5,
         "Name":"Mindfulness Meditation Practice",
         "Description":"Cultivate inner peace and emotional resilience through mindfulness meditation techniques, suitable for beginners and experienced practitioners alike.",
         "AmountOfLectures":23,
-        "CreationDate":"11/3/2023"
+        "CreationDate":"2024-02-21T04:42:22Z"
     },
     {
-        "id":7,
+        "id":6,
         "Name":"Introduction to Artificial Intelligence",
         "Description":"Explore the foundations of AI, including machine learning, neural networks, and their applications in various fields.",
         "AmountOfLectures":80,
-        "CreationDate":"11/23/2023"
+        "CreationDate":"2023-05-15T15:46:08Z"
     },
     {
-        "id":8,
+        "id":7,
         "Name":"Financial Literacy for Young Adults",
         "Description":"Gain essential money management skills, from budgeting and saving to investing and understanding financial markets.",
         "AmountOfLectures":80,
-        "CreationDate":"10/31/2023"
-    },
+        "CreationDate":"2024-01-22T02:34:50Z"
+    }
 ]
