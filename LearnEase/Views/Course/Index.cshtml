@@ -9,15 +9,60 @@
     });
 }
 
-<div>
-    <h1>All courses</h1>
-    
-    @foreach (var course in courses)
-    {
-        <p>@(course?.Name ?? "UNKNOWN")</p>
-        <p>@(course?.Description ?? "UNKNOWN")</p>
-        <p>Amount of lectures: @(course?.AmountOfLectures ?? 0)</p>
-        <p>@(course?.CreationDate.ToString() ?? "UNKNOWN")</p>
-        <hr>
+<style>
+    .index-header {
+        margin-bottom: 50px;
     }
+
+    .list-item {
+        padding: 30px;
+        margin-bottom: 50px;
+        font-size: 18px;
+
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    }
+
+    .list-item: :last-child {
+        margin-bottom: 0px;
+    }
+
+    .item-name {
+        margin-bottom: 15px;
+    }
+
+    .item-desc {
+        margin-bottom: 50px;
+    }
+
+    .item-lect-amount, .item-date {
+        color: #505050;
+    }
+</style>
+
+<div>
+    <div class="courses-info">
+        <div class="index-header">
+            <h1>All courses</h1>
+        </div>
+
+        <div class="courses-list">
+            @foreach (var course in courses)
+            {
+                <div class="list-item">
+                    <div class="item-name">
+                        <h3>@(course?.Name ?? "UNKNOWN")</h3>
+                    </div>
+                    <div class="item-desc">
+                        @(course?.Description ?? "UNKNOWN")
+                    </div>
+                    <div class="item-lect-amount">
+                        Amount of lectures: @(course?.AmountOfLectures ?? 0)
+                    </div>
+                    <div class="item-date">
+                        @(course?.CreationDate.ToString() ?? "UNKNOWN")
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>
