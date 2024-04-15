@@ -49,8 +49,41 @@
     }
 
     .courses-action-form {
-        margin-bottom: 50px;
+        width: 500px;
+        
+
+       
         padding: 30px;
+    }
+
+    .form-item  {
+        margin-bottom: 20px;
+    }
+    
+    .form-item input {
+        width: 100%;
+        padding: 12px;
+
+        border: solid 1px;
+        border-radius: 10px;
+        font-size: 17px;
+    }
+
+    .form-item .item-label {
+        font-size: 19px;
+        margin-bottom: 10px;
+    }
+
+    .form-btn {
+        font-size: 20px;
+        background-color: transparent;
+        color: black;
+        padding: 12px 36px;
+
+        margin-top: 20px;
+
+        border: solid 1px;
+        border-radius: 10px;
     }
 
 </style>
@@ -62,17 +95,30 @@
         </div>
 
         <div class="courses-action-form shadow">
+            
             <form action="/Course" method="post">
-                <label>Name:</label>
-                <input type="text" name="Name">
+                <div class="form-item">
+                    <div class="item-label">
+                        <label>Name</label>
+                    </div>
+                    <input type="text" name="Name">
+                </div>
 
-                <label>Description:</label>
-                <input type="text" name="Description">
+                <div class="form-item">
+                    <div class="item-label">
+                        <label>Description</label>
+                    </div>
+                    <input type="text" name="Description">
+                </div>
 
-                <label>Amount of Lectures: </label>
-                <input type="number" name="AmountOfLectures" />
+                <div class="form-item">
+                    <div class="item-label">
+                        <label>Amount of lectures</label>
+                    </div>
+                    <input type="number" name="AmountOfLectures">
+                </div>
 
-                <button>Create</button>
+                <button class="form-btn">Create</button>
             </form>
         </div>
     </div>
