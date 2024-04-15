@@ -1,15 +1,20 @@
 @using System.Text.Json
 
-@model LearnEase.Views.Course.Index
 @{
     var coursesJson = await System.IO.File.ReadAllTextAsync("Assets/courses.json");
 
     var courses = JsonSerializer.Deserialize<IEnumerable<Course>>(coursesJson, new JsonSerializerOptions {
         PropertyNameCaseInsensitive = true,
     });
+
+    courses = courses ?? new List<Course>();
 }
 
 <style>
+    .shadow {
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    }
+
     .index-header {
         margin-bottom: 50px;
     }
@@ -18,8 +23,6 @@
         padding: 30px;
         margin-bottom: 50px;
         font-size: 18px;
-
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     }
 
     .list-item: :last-child {
@@ -37,9 +40,43 @@
     .item-lect-amount, .item-date {
         color: #505050;
     }
+
+
+
+
+    .courses-action {
+        margin-bottom: 100px;
+    }
+
+    .courses-action-form {
+        margin-bottom: 50px;
+        padding: 30px;
+    }
+
 </style>
 
 <div>
+    <div class="courses-action"> 
+        <div class="index-header">
+                <h1>Create course</h1>
+        </div>
+
+        <div class="courses-action-form shadow">
+            <form action="/Course" method="post">
+                <label>Name:</label>
+                <input type="text" name="Name">
+
+                <label>Description:</label>
+                <input type="text" name="Description">
+
+                <label>Amount of Lectures: </label>
+                <input type="number" name="AmountOfLectures" />
+
+                <button>Create</button>
+            </form>
+        </div>
+    </div>
+    
     <div class="courses-info">
         <div class="index-header">
             <h1>All courses</h1>
@@ -48,12 +85,12 @@
         <div class="courses-list">
             @foreach (var course in courses)
             {
-                <div class="list-item">
+                <div class="list-item shadow">
                     <div class="item-name">
-                        <h3>@(course?.Name ?? "UNKNOWN")</h3>
+                        <h3>@(course?.Name)</h3>
                     </div>
                     <div class="item-desc">
-                        @(course?.Description ?? "UNKNOWN")
+                        @(course?.Description)
                     </div>
                     <div class="item-lect-amount">
                         Amount of lectures: @(course?.AmountOfLectures ?? 0)
