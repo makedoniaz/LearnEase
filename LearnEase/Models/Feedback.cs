@@ -13,7 +13,7 @@ namespace LearnEase.Models
 
         public string? Text { get; set; }
 
-        public int Rating { get; set; }
+        public int? Rating { get; set; }
 
         public int CourseId { get; set; }
 
