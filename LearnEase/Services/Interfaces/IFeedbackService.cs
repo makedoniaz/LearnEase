@@ -14,6 +14,6 @@ namespace LearnEase.Services.Interfaces
 
         Task PutFeedbackAsync(int id, Feedback feedback);
 
-        Task DeleteFeedbackAsync(Feedback feedback);
+        Task DeleteFeedbackAsync(int feedbacId);
     }
 }

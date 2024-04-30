@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace LearnEase.Repositories.Interfaces.Base
 {
-    public interface IDeleteAsync<TEntity>
+    public interface IDeleteAsync<TId>
     {
-        public Task DeleteAsync(TEntity entity);
+        public Task DeleteAsync(TId entityId);
     }
 }

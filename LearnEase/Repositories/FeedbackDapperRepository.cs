@@ -63,7 +63,7 @@ namespace LearnEase.Repositories
                 );
         }
 
-        public async Task DeleteAsync(Feedback feedback)
+        public async Task DeleteAsync(int feedbackId)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -72,7 +72,7 @@ namespace LearnEase.Repositories
                         @"delete from Feedbacks
                         where Id = @Id",            
                     param: new {
-                       feedback.Id
+                       feedbackId
                     }
                 );
         }

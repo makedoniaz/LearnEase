@@ -31,9 +31,9 @@ namespace LearnEase.Services
             await feedbackRepository.CreateAsync(feedback);
         }
 
-        public async Task DeleteFeedbackAsync(Feedback feedback)
+        public async Task DeleteFeedbackAsync(int feedbackId)
         {
-            await feedbackRepository.DeleteAsync(feedback);
+            await feedbackRepository.DeleteAsync(feedbackId);
         }
 
         public Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId)

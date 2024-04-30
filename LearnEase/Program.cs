@@ -11,6 +11,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ICourseRepository, CourseDapperRepository>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 
+builder.Services.AddScoped<IFeedbackRepository, FeedbackDapperRepository>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+
 
 var app = builder.Build();
 

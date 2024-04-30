@@ -8,7 +8,7 @@ using LearnEase.Repositories.Interfaces.Base;
 namespace LearnEase.Repositories.Interfaces
 {
     public interface IFeedbackRepository :
-        ICreateAsync<Feedback>, IDeleteAsync<Feedback>,
+        ICreateAsync<Feedback>, IDeleteAsync<int>,
         IPutAsync<Feedback>
     {
         Task<IEnumerable<Feedback>> GetAllByCourseIdAsync(int courseId);
