@@ -8,8 +8,8 @@ namespace LearnEase.Services.Interfaces
 {
     public interface ICourseService
     {
-        public Task<IEnumerable<Course>> GetAllCoursesAsync();
+        Task<IEnumerable<Course>> GetAllCoursesAsync();
         
-        public Task CreateCourseAsync(Course newCourse);
+        Task CreateCourseAsync(Course newCourse);
     }
 }

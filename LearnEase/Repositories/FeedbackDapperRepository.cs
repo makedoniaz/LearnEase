@@ -12,6 +12,39 @@ namespace LearnEase.Repositories
     public class FeedbackDapperRepository : IFeedbackRepository
     {
         private const string connectionString = @"Server=localhost;Database=MyGames;Trusted_Connection=True;TrustServerCertificate=True";
+
+
+        public async Task<IEnumerable<Feedback>> GetAllByCourseIdAsync(int courseId)
+        {
+            using var connection = new SqlConnection(connectionString);
+
+            return await connection.QueryAsync<Feedback>(
+                        sql: @"select * from Feedbacks
+                                where CourseId = @courseId",
+                        courseId
+                    );
+        }
+
+
+         public async Task CreateAsync(Feedback feedback)
+        {
+            using var connection = new SqlConnection(connectionString);
+
+            await connection.ExecuteAsync(
+                    sql: @"insert into Feedbacks
+                        (Username, Text, Rating, CourseId, CreationDate)
+                        values (@Username, @Text, @Rating, @CourseId, @CreationDate)",
+                    param: new {
+                        feedback.Username,
+                        feedback.Text,
+                        feedback.Rating,
+                        feedback.CourseId,
+                        feedback.CreationDate
+                    }
+                );
+        }
+
+
         public async Task PutAsync(int id, Feedback feedback)
         {
             using var connection = new SqlConnection(connectionString);
@@ -30,24 +63,6 @@ namespace LearnEase.Repositories
                 );
         }
 
-        public async Task CreateAsync(Feedback feedback)
-        {
-            using var connection = new SqlConnection(connectionString);
-
-            await connection.ExecuteAsync(
-                    sql: @"insert into Feedbacks
-                        (Username, Text, Rating, CourseId, CreationDate)
-                        values (@Username, @Text, @Rating, @CourseId, @CreationDate)",
-                    param: new {
-                        feedback.Username,
-                        feedback.Text,
-                        feedback.Rating,
-                        feedback.CourseId,
-                        feedback.CreationDate
-                    }
-                );
-        }
-
         public async Task DeleteAsync(Feedback feedback)
         {
             using var connection = new SqlConnection(connectionString);
@@ -60,17 +75,6 @@ namespace LearnEase.Repositories
                        feedback.Id
                     }
                 );
-        }
-
-        public async Task<IEnumerable<Feedback>> GetAllByCourseIdAsync(int courseId)
-        {
-            using var connection = new SqlConnection(connectionString);
-
-            return await connection.QueryAsync<Feedback>(
-                        sql: @"select * from Feedbacks
-                                where CourseId = @courseId",
-                        courseId
-                    );
         }
 
     }
