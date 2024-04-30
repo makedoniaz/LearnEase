@@ -1,43 +1,38 @@
 using System.Text.Json;
 using LearnEase.Models;
+using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Controllers;
 
 public class CourseController : Controller
 {
+    private readonly ICourseService courseService;
+
+    public CourseController(ICourseService courseService)
+    {
+        this.courseService = courseService;
+    }
 
     [HttpGet]
     [Route("[controller]")]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var courses = await this.courseService.GetAllCoursesAsync();
+
+        return View(courses);
     }
 
     [HttpPost]
     [Route("[controller]")]
     public async Task<IActionResult> CreateCourse(Course newCourse) {
+        try {
 
-        if (string.IsNullOrWhiteSpace(newCourse.Name) || string.IsNullOrWhiteSpace(newCourse.Description))
-            return BadRequest();
-
-        newCourse.CreationDate = DateTime.Now;
-
-        var coursesJson = await System.IO.File.ReadAllTextAsync("Assets/courses.json");
-
-        var courses = JsonSerializer.Deserialize<List<Course>>(coursesJson, new JsonSerializerOptions {
-            PropertyNameCaseInsensitive = true,
-        });
-
-        courses ??= new List<Course>();
-        courses.Add(newCourse);
-
-        var newCoursesJson = JsonSerializer.Serialize(courses, new JsonSerializerOptions {
-            PropertyNameCaseInsensitive = true,
-        });
-
-        await System.IO.File.WriteAllTextAsync("Assets/courses.json", newCoursesJson);
-
-        return base.RedirectToAction(actionName: "Index");
+            await this.courseService.CreateCourseAsync(newCourse);
+            return base.RedirectToAction(actionName: "Index");
+        }
+        catch (Exception ex) {
+            return BadRequest(ex);
+        }
     }
 }

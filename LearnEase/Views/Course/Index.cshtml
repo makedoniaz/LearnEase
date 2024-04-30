@@ -1,14 +1,6 @@
 @using System.Text.Json
 
-@{
-    var coursesJson = await System.IO.File.ReadAllTextAsync("Assets/courses.json");
-
-    var courses = JsonSerializer.Deserialize<IEnumerable<Course>>(coursesJson, new JsonSerializerOptions {
-        PropertyNameCaseInsensitive = true,
-    });
-
-    courses = courses ?? new List<Course>();
-}
+@model IEnumerable<Course>;
 
 <style>
     .shadow {
@@ -129,7 +121,7 @@
         </div>
 
         <div class="courses-list">
-            @foreach (var course in courses)
+            @foreach (var course in Model)
             {
                 <div class="list-item shadow">
                     <div class="item-name">

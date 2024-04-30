@@ -1,7 +1,16 @@
+using LearnEase.Repositories;
+using LearnEase.Repositories.Interfaces;
+using LearnEase.Services;
+using LearnEase.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<ICourseRepository, CourseDapperRepository>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+
 
 var app = builder.Build();
 
