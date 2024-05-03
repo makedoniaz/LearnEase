@@ -22,11 +22,6 @@ namespace LearnEase.Controllers
             this.feedbackService = feedbackService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpGet("{courseId?}")]
         public async Task<IActionResult> GetFeedbacks(int courseId) {
             try
@@ -36,7 +31,7 @@ namespace LearnEase.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -44,10 +39,10 @@ namespace LearnEase.Controllers
         public async Task<IActionResult> Create(Feedback newFeedback) {
             try {
                 await this.feedbackService.CreateFeedbackAsync(newFeedback);
-                return base.RedirectToAction(actionName: "Index");
+                return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = newFeedback.CourseId });
             }
             catch (Exception ex) {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -61,7 +56,7 @@ namespace LearnEase.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -76,7 +71,7 @@ namespace LearnEase.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
     }

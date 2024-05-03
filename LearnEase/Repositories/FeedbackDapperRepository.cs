@@ -11,8 +11,7 @@ namespace LearnEase.Repositories
 {
     public class FeedbackDapperRepository : IFeedbackRepository
     {
-        private const string connectionString = @"Server=localhost;Database=MyGames;Trusted_Connection=True;TrustServerCertificate=True";
-
+        private readonly string connectionString = "Server =localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin;Password=admin";
 
         public async Task<IEnumerable<Feedback>> GetAllByCourseIdAsync(int courseId)
         {
@@ -21,7 +20,7 @@ namespace LearnEase.Repositories
             return await connection.QueryAsync<Feedback>(
                         sql: @"select * from Feedbacks
                                 where CourseId = @courseId",
-                        courseId
+                        param: new { courseId }
                     );
         }
 
@@ -30,7 +29,7 @@ namespace LearnEase.Repositories
         {
             using var connection = new SqlConnection(connectionString);
 
-            await connection.ExecuteAsync(
+             await connection.ExecuteAsync(
                     sql: @"insert into Feedbacks
                         (Username, Text, Rating, CourseId, CreationDate)
                         values (@Username, @Text, @Rating, @CourseId, @CreationDate)",

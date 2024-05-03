@@ -78,7 +78,21 @@
         border-radius: 10px;
     }
 
+    .item-button {
+        margin-top: 20px;
+        padding: 10px 12px;
+    }
+
 </style>
+
+<script>
+    async function GetFeedbacks(let courseId) {
+        const response = await fetch("http://example.com/movies.json");
+        const feedbacks = await response.json();
+
+        return courses
+    }
+</script>
 
 <div>
     <div class="courses-action"> 
@@ -136,6 +150,8 @@
                     <div class="item-date">
                         @(course?.CreationDate.ToString() ?? "UNKNOWN")
                     </div>
+
+                    <a href="/Feedback/@(course?.Id)" class="btn btn-secondary btn-dark active item-button px-4" role="button" aria-pressed="true">Feedbacks</a>
                 </div>
             }
         </div>

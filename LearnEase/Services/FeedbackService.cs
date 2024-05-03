@@ -10,6 +10,8 @@ namespace LearnEase.Services
 {
     public class FeedbackService : IFeedbackService
     {
+        private int currentCourseId;
+
         private readonly IFeedbackRepository feedbackRepository;
 
         public FeedbackService(IFeedbackRepository feedbackRepository) {
@@ -28,6 +30,8 @@ namespace LearnEase.Services
 
         public async Task CreateFeedbackAsync(Feedback feedback)
         {
+            feedback.CreationDate = DateTime.Now;
+            feedback.CourseId = this.currentCourseId;
             await feedbackRepository.CreateAsync(feedback);
         }
 
@@ -38,6 +42,7 @@ namespace LearnEase.Services
 
         public Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId)
         {
+            currentCourseId = courseId;
             return feedbackRepository.GetAllByCourseIdAsync(courseId);
         }
     }
