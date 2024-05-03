@@ -19,7 +19,8 @@ namespace LearnEase.Repositories
 
             return await connection.QueryAsync<Feedback>(
                         sql: @"select * from Feedbacks
-                                where CourseId = @courseId",
+                                where CourseId = @courseId
+                                order by Feedbacks.CreationDate desc",
                         param: new { courseId }
                     );
         }
@@ -71,7 +72,7 @@ namespace LearnEase.Repositories
                         @"delete from Feedbacks
                         where Id = @Id",            
                     param: new {
-                       feedbackId
+                       Id = feedbackId
                     }
                 );
         }

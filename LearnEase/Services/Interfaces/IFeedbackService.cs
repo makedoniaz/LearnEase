@@ -8,6 +8,8 @@ namespace LearnEase.Services.Interfaces
 {
     public interface IFeedbackService
     {
+        int CurrentCourseId { get; set; }
+
         Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId);
         
         Task CreateFeedbackAsync(Feedback newFeedback);

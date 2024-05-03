@@ -14,7 +14,6 @@ namespace LearnEase.Controllers
     [Route("[controller]")]
     public class FeedbackController : Controller
     {
-
         IFeedbackService feedbackService;
 
         public FeedbackController(IFeedbackService feedbackService)
@@ -39,7 +38,7 @@ namespace LearnEase.Controllers
         public async Task<IActionResult> Create(Feedback newFeedback) {
             try {
                 await this.feedbackService.CreateFeedbackAsync(newFeedback);
-                return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = newFeedback.CourseId });
+                return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });
             }
             catch (Exception ex) {
                 return BadRequest(ex.Message);
@@ -60,13 +59,13 @@ namespace LearnEase.Controllers
             }
         }
 
-        [Route("[action]/{id}")]
+        [Route("[action]/{feedbackId}")]
         public async Task<IActionResult> Delete(int feedbackId)
         {
             try
             {
                 await this.feedbackService.DeleteFeedbackAsync(feedbackId);
-                return base.RedirectToAction(actionName: "Index");
+                return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });
 
             }
             catch(Exception ex)

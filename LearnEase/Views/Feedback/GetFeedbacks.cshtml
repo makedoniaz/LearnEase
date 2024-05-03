@@ -39,7 +39,18 @@
     .item-rating {
         font-size: 26px;
     }
+
+    .item-functionality {
+        font-size: 17px;
+    }
+
 </style>
+
+<script> 
+    function DeleteFeedback(feedbackId) {
+        fetch('/Feedback/' + feedbackId, { method: 'DELETE' });
+    }
+</script>
 
 <div>
     @foreach (var feedback in Model)
@@ -52,8 +63,13 @@
                     <div class="item-text feedback-item-text mb-2">
                         @(feedback.Text)
                     </div>
-                    <div class="item-date feedback-item-text">
+                    <div class="item-date feedback-item-text mb-3">
                         @(feedback.CreationDate)
+                    </div>
+
+                    <div class="item-functionality">
+                        <a href="/Feedback/Delete/@(feedback.Id)" class="text-danger">Delete</a> |
+                        <a href="#" class="text-dark">Edit</a>
                     </div>
                 </div>
 
