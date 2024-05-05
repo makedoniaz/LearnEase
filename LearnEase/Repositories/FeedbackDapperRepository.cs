@@ -1,29 +1,25 @@
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
-using LearnEase.Repositories.Interfaces.Base;
 
 namespace LearnEase.Repositories
 {
     public class FeedbackDapperRepository : IFeedbackRepository
     {
-        private readonly string connectionString = "Server =localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin;Password=admin";
+        private readonly string connectionString = "Server=localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin; Password=admin";
         
-
         public async Task<Feedback> GetById(int id)
         {
             using var connection = new SqlConnection(connectionString);
 
-            return await connection.QueryFirstAsync<Feedback>(
+            var feedback =  await connection.QueryFirstAsync<Feedback>(
                         sql: @"select * from Feedbacks
                                 where Id = @id",
                         param: new { id }
                     );
+            
+            return feedback;
         }
 
 
@@ -31,12 +27,14 @@ namespace LearnEase.Repositories
         {
             using var connection = new SqlConnection(connectionString);
 
-            return await connection.QueryAsync<Feedback>(
+            var feedbacks = await connection.QueryAsync<Feedback>(
                         sql: @"select * from Feedbacks
                                 where CourseId = @courseId
                                 order by Feedbacks.CreationDate desc",
                         param: new { courseId }
                     );
+            
+            return feedbacks;
         }
 
 
@@ -44,7 +42,7 @@ namespace LearnEase.Repositories
         {
             using var connection = new SqlConnection(connectionString);
 
-             await connection.ExecuteAsync(
+             var affectedRowsCount = await connection.ExecuteAsync(
                     sql: @"insert into Feedbacks
                         (Username, Text, Rating, CourseId, CreationDate)
                         values (@Username, @Text, @Rating, @CourseId, @CreationDate)",
@@ -56,6 +54,9 @@ namespace LearnEase.Repositories
                         feedback.CreationDate
                     }
                 );
+
+            if (affectedRowsCount <= 0)
+                throw new Exception("Insert error!");
         }
 
 
@@ -63,32 +64,40 @@ namespace LearnEase.Repositories
         {
             using var connection = new SqlConnection(connectionString);
 
-            await connection.ExecuteAsync(
+            var affectedRowsCount = await connection.ExecuteAsync(
                     sql: @"update Feedbacks 
                         set 
                         Text = @Text,
                         Rating = @Rating
+                        CreationDate = @CreationDate
                         where Id = @id",
                     param: new {
                         feedback.Text,  
                         feedback.Rating,
+                        feedback.CreationDate,
                         Id = id,
                     }
                 );
+
+            if (affectedRowsCount <= 0)
+                throw new Exception("Insert error!");
         }
 
-        public async Task DeleteAsync(int feedbackId)
+        public async Task DeleteAsync(int id)
         {
             using var connection = new SqlConnection(connectionString);
 
-            await connection.ExecuteAsync(
+            var affectedRowsCount = await connection.ExecuteAsync(
                     sql:
                         @"delete from Feedbacks
                         where Id = @Id",            
                     param: new {
-                       Id = feedbackId
+                       Id = id
                     }
                 );
+
+            if (affectedRowsCount <= 0)
+                throw new Exception("Delete error!");
         }
     }
 }

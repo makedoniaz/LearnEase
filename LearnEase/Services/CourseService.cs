@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
 using LearnEase.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace LearnEase.Services
 {

@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
@@ -11,7 +7,7 @@ namespace LearnEase.Repositories
 {
     public class CourseDapperRepository : ICourseRepository
     {
-        private readonly string connectionString = "Server =localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin;Password=admin";
+        private readonly string connectionString = "Server=localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin; Password=admin";
 
         public async Task<IEnumerable<Course>> GetAllAsync()
         {
