@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Controllers;
 
+[Route("[controller]")]
 public class CourseController : Controller
 {
     private readonly ICourseService courseService;
@@ -15,7 +16,6 @@ public class CourseController : Controller
     }
 
     [HttpGet]
-    [Route("[controller]")]
     public async Task<IActionResult> Index()
     {
         var courses = await this.courseService.GetAllCoursesAsync();
@@ -24,15 +24,13 @@ public class CourseController : Controller
     }
 
     [HttpPost]
-    [Route("[controller]")]
     public async Task<IActionResult> CreateCourse(Course newCourse) {
         try {
-
             await this.courseService.CreateCourseAsync(newCourse);
             return base.RedirectToAction(actionName: "Index");
         }
         catch (Exception ex) {
-            return BadRequest(ex);
+            return BadRequest(ex.Message);
         }
     }
 }

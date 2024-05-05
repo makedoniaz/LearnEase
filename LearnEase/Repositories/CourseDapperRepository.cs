@@ -17,7 +17,10 @@ namespace LearnEase.Repositories
         {
             using var connection = new SqlConnection(connectionString);
 
-            return await connection.QueryAsync<Course>("select * from Courses");
+            return await connection.QueryAsync<Course>(
+                sql: $@"select * from Courses 
+                    order by CreationDate desc"
+            );
         }
 
         public async Task CreateAsync(Course course)

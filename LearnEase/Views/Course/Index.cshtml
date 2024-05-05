@@ -98,21 +98,21 @@
                     <div class="item-label">
                         <label>Name</label>
                     </div>
-                    <input type="text" name="Name">
+                    <input type="text" name="Name" required maxlength="100">
                 </div>
 
                 <div class="form-item">
                     <div class="item-label">
                         <label>Description</label>
                     </div>
-                    <input type="text" name="Description">
+                    <input type="text" name="Description" required maxlength="500">
                 </div>
 
                 <div class="form-item">
                     <div class="item-label">
                         <label>Amount of lectures</label>
                     </div>
-                    <input type="number" name="AmountOfLectures">
+                    <input type="number" name="AmountOfLectures" required min="1">
                 </div>
 
                 <button class="form-btn">Create</button>

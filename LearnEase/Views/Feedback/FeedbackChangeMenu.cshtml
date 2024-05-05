@@ -17,7 +17,7 @@
     <form class="feedback-form" action="/Feedback/Change/@feedback.Id" method="post">
         <div class="form-text mb-3">
             <label class="mb-3 h5 text-dark" for="feedback-textarea">Feedback:</label>
-            <textarea class="form-control" id="feedback-textarea" rows="3" name="text" >@feedback.Text</textarea>
+            <textarea class="form-control" id="feedback-textarea" rows="3" name="text" required maxlength="500">@feedback.Text</textarea>
         </div>
 
         <div class="form-rating mb-4">
