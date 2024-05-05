@@ -8,8 +8,8 @@ using LearnEase.Repositories.Interfaces.Base;
 namespace LearnEase.Repositories.Interfaces
 {
     public interface IFeedbackRepository :
-        ICreateAsync<Feedback>, IDeleteAsync<int>,
-        IPutAsync<Feedback>
+        IGetById<Feedback, int>, ICreateAsync<Feedback>, 
+        IDeleteAsync<int>, IPutAsync<Feedback>
     {
         Task<IEnumerable<Feedback>> GetAllByCourseIdAsync(int courseId);
     }

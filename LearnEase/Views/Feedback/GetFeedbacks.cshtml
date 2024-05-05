@@ -32,7 +32,7 @@
         padding: 30px 30px 30px 30px;
     }
 
-    .item-text  {
+    .item-text-info  {
         font-size: 18px;
     }
 
@@ -46,39 +46,38 @@
 
 </style>
 
-<script> 
-    function DeleteFeedback(feedbackId) {
-        fetch('/Feedback/' + feedbackId, { method: 'DELETE' });
-    }
-</script>
-
-<div>
-    @foreach (var feedback in Model)
+<div class="main-container">
+    <div class="feedbacks">
+        @foreach (var feedback in Model)
         {
-            <div class="list-item mb-4 d-flex justify-content-between align-items-center">
-                <div class="item-text">
-                    <div class="item-username h4 mb-3">
+            <div class="list-item mb-4" id="@feedback.Id" >
+                <div class="info-wrapper d-flex justify-content-between align-items-center">
+                    <div class="item-text-info">
+                        <div class="item-username h4 mb-3">
                         @(feedback.Username)
-                    </div>
-                    <div class="item-text feedback-item-text mb-2">
-                        @(feedback.Text)
-                    </div>
-                    <div class="item-date feedback-item-text mb-3">
-                        @(feedback.CreationDate)
+                        </div>
+
+                        <div class="item-text mb-2">
+                            @(feedback.Text)
+                        </div>
+
+                        <div class="item-date mb-3">
+                            @(feedback.CreationDate)
+                        </div>
                     </div>
 
-                    <div class="item-functionality">
-                        <a href="/Feedback/Delete/@(feedback.Id)" class="text-danger">Delete</a> |
-                        <a href="#" class="text-dark">Edit</a>
+                    <div class="item-rating feedback-item-text">
+                        @(feedback.Rating ?? 0)/5
                     </div>
                 </div>
 
-                <div class="item-rating feedback-item-text">
-                    @(feedback.Rating ?? 0)/5
+                <div class="item-functionality">
+                    <a href="/Feedback/Delete/@feedback.Id" class="delete-btn text-danger" onclick="DeleteFeedback(@feedback.Id)">Delete</a> |
+                    <a href="/Feedback/Edit/@feedback.Id" class="edit-ref text-dark">Edit</a>
                 </div>
             </div>
         }
-
+    </div>
 
     <form class="feedback-form" action="/Feedback" method="post">
         <div class="form-group">
@@ -96,7 +95,7 @@
             </div>
 
              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" name="Rating">
+                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio1" value="1" name="Rating">
                 <label class="form-check-label" for="inlineRadio1">1</label>
             </div>
             <div class="form-check form-check-inline">
@@ -121,3 +120,37 @@
     </form>
         
 </div>
+
+
+<script> 
+    var feedbacksDiv = document.querySelector('.feedbacks');
+     //feedbacksDiv.addEventListener("click", FeedbackEventHandler)
+@* 
+    function DeleteFeedback(feedbackId) {
+        return fetch('/Feedback/' + feedbackId, { method: 'DELETE' })
+            .then((response) => {
+                if (!response.ok)
+                    throw new Error(response.statusText)
+
+                console.log("Feedback was successfully deleted!")
+            })
+            .catch((err) => console.log(err.message));
+    } *@
+
+    async function FeedbackEventHandler(e) {
+        var clickTarget = e.target;
+
+        if (clickTarget.tagName === 'BUTTON') {
+            var feedbackId = clickTarget.parentElement.parentElement.id;
+
+            if (clickTarget.classList.contains("edit-btn")) {
+            }
+
+            else if (clickTarget.classList.contains("delete-btn")) {
+                console.log(feedbackId)
+                await DeleteFeedback(feedbackId)
+            }
+        }
+    }
+    
+</script>

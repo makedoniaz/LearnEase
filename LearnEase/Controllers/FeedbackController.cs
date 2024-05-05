@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.Extensions.Logging;
@@ -21,8 +22,10 @@ namespace LearnEase.Controllers
             this.feedbackService = feedbackService;
         }
 
-        [HttpGet("{courseId?}")]
+        [HttpGet("{courseId:int}")]
         public async Task<IActionResult> GetFeedbacks(int courseId) {
+            Console.WriteLine("GET: " + Request.GetDisplayUrl());
+
             try
             {
                 var feedbacks = await this.feedbackService.GetAllFeedbacksByCourseIdAsync(courseId);
@@ -36,6 +39,7 @@ namespace LearnEase.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(Feedback newFeedback) {
+            Console.WriteLine("POST: " + Request.GetDisplayUrl());
             try {
                 await this.feedbackService.CreateFeedbackAsync(newFeedback);
                 return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });
@@ -44,14 +48,23 @@ namespace LearnEase.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
 
-        [HttpPut]
-        public async Task<IActionResult> Change(Feedback feedback)
+        [Route("Edit/{feedbackId:int?}")]
+        public async Task<IActionResult> GetFeedbackChangeMenu(int feedbackId) {
+            var feedback = await feedbackService.GetFeedbackById(feedbackId);
+
+            return View("FeedbackChangeMenu", feedback);
+        }
+        
+        [HttpPost]
+        [Route("[action]/{feedbackId:int}")]
+        public async Task<IActionResult> Change(Feedback feedback, int feedbackId)
         {
             try
             {
-                await this.feedbackService.PutFeedbackAsync(feedback.Id, feedback);
-                return base.RedirectToAction(actionName: "Index");
+                await this.feedbackService.PutFeedbackAsync(feedbackId, feedback);
+                return base.RedirectToAction("GetFeedbacks", new { courseId = feedbackService.CurrentCourseId });
             }
             catch(Exception ex)
             {
@@ -59,14 +72,13 @@ namespace LearnEase.Controllers
             }
         }
 
-        [Route("[action]/{feedbackId}")]
+        [Route("[action]/{feedbackId:int}")]
         public async Task<IActionResult> Delete(int feedbackId)
         {
             try
             {
                 await this.feedbackService.DeleteFeedbackAsync(feedbackId);
-                return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });
-
+                return base.RedirectToAction("GetFeedbacks", new { courseId = feedbackService.CurrentCourseId });
             }
             catch(Exception ex)
             {

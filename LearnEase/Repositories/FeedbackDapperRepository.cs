@@ -6,12 +6,26 @@ using System.Threading.Tasks;
 using Dapper;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
+using LearnEase.Repositories.Interfaces.Base;
 
 namespace LearnEase.Repositories
 {
     public class FeedbackDapperRepository : IFeedbackRepository
     {
         private readonly string connectionString = "Server =localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin;Password=admin";
+        
+
+        public async Task<Feedback> GetById(int id)
+        {
+            using var connection = new SqlConnection(connectionString);
+
+            return await connection.QueryFirstAsync<Feedback>(
+                        sql: @"select * from Feedbacks
+                                where Id = @id",
+                        param: new { id }
+                    );
+        }
+
 
         public async Task<IEnumerable<Feedback>> GetAllByCourseIdAsync(int courseId)
         {
@@ -76,6 +90,5 @@ namespace LearnEase.Repositories
                     }
                 );
         }
-
     }
 }

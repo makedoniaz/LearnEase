@@ -1,0 +1,88 @@
+@using LearnEase.Models;
+@model Feedback
+
+@{
+    var feedback = Model;
+}
+
+<style>
+    .feedback-form {
+        padding: 25px;
+        border: 1px solid #d3d3d3;
+        border-radius: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .feedback-rating {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div>
+    <form class="feedback-form" action="/Feedback/Change/@feedback.Id" method="post">
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Feedback</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text" >@feedback.Text</textarea>
+        </div>
+
+        <div class="feedback-rating">
+            <div class="feedback-heading">
+                Rate course
+            </div>
+
+             <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio1" value="1" name="Rating">
+                <label class="form-check-label" for="inlineRadio1">1</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio2" value="2">
+                <label class="form-check-label" for="inlineRadio2">2</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio3" value="3">
+                <label class="form-check-label" for="inlineRadio2">3</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio4" value="4">
+                <label class="form-check-label" for="inlineRadio2">4</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio5" value="5">
+                <label class="form-check-label" for="inlineRadio2">5</label>
+            </div>
+        </div>
+
+        <button class="change-btn btn btn-dark px-4">Change feedback</button>
+    </form>
+</div>
+
+<script>
+
+    var button = document.querySelector(".change-btn")
+    button.addEventListener("click", ChangeFeedbackHandler)
+
+    async function ChangeFeedbackHandler(e) {
+        var feedback = @feedback
+
+        await fetch('/Feedback/' + @feedback.Id, { 
+                    method: 'PUT',
+                    body: feedback,
+                    headers: {  
+                        'Content-type': 'application/json; charset=UTF-8'
+                    }
+            })
+            .then((response) => {
+                if (!response.ok)
+                    throw new Error(response.statusText)
+            })
+            .catch((err) => console.log(err.message));
+    }
+</script>

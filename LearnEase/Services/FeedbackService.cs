@@ -18,6 +18,11 @@ namespace LearnEase.Services
             this.feedbackRepository = feedbackRepository;
         }
 
+        public async Task<Feedback> GetFeedbackById(int id)
+        {
+            return await feedbackRepository.GetById(id);
+        }
+
         public async Task PutFeedbackAsync(int id, Feedback feedback)
         {
             if (feedback == null)
@@ -35,9 +40,9 @@ namespace LearnEase.Services
             await feedbackRepository.CreateAsync(feedback);
         }
 
-        public async Task DeleteFeedbackAsync(int feedbackId)
+        public async Task DeleteFeedbackAsync(int id)
         {
-            await feedbackRepository.DeleteAsync(feedbackId);
+            await feedbackRepository.DeleteAsync(id);
         }
 
         public Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId)
