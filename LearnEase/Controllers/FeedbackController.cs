@@ -1,89 +1,80 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS.Core;
-using Microsoft.Extensions.Logging;
 
-namespace LearnEase.Controllers
+namespace LearnEase.Controllers;
+
+[Route("[controller]")]
+public class FeedbackController : Controller
 {
-    [Route("[controller]")]
-    public class FeedbackController : Controller
+    private readonly IFeedbackService feedbackService;
+
+    public FeedbackController(IFeedbackService feedbackService)
     {
-        IFeedbackService feedbackService;
+        this.feedbackService = feedbackService;
+    }
 
-        public FeedbackController(IFeedbackService feedbackService)
+    [HttpGet("{courseId:int}")]
+    public async Task<IActionResult> GetFeedbacks(int courseId) {
+        Console.WriteLine("GET: " + Request.GetDisplayUrl());
+
+        try
         {
-            this.feedbackService = feedbackService;
+            var feedbacks = await this.feedbackService.GetAllFeedbacksByCourseIdAsync(courseId);
+            return View(feedbacks);
         }
-
-        [HttpGet("{courseId:int}")]
-        public async Task<IActionResult> GetFeedbacks(int courseId) {
-            Console.WriteLine("GET: " + Request.GetDisplayUrl());
-
-            try
-            {
-                var feedbacks = await this.feedbackService.GetAllFeedbacksByCourseIdAsync(courseId);
-                return View(feedbacks);
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(Feedback newFeedback) {
-            Console.WriteLine("POST: " + Request.GetDisplayUrl());
-            try {
-                await this.feedbackService.CreateFeedbackAsync(newFeedback);
-                return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });
-            }
-            catch (Exception ex) {
-                return BadRequest(ex.Message);
-            }
-        }
-        
-
-        [Route("Edit/{feedbackId:int?}")]
-        public async Task<IActionResult> GetFeedbackChangeMenu(int feedbackId) {
-            var feedback = await feedbackService.GetFeedbackById(feedbackId);
-
-            return View("FeedbackChangeMenu", feedback);
-        }
-        
-        [HttpPost]
-        [Route("[action]/{feedbackId:int}")]
-        public async Task<IActionResult> Change(Feedback feedback, int feedbackId)
+        catch(Exception ex)
         {
-            try
-            {
-                await this.feedbackService.PutFeedbackAsync(feedbackId, feedback);
-                return base.RedirectToAction("GetFeedbacks", new { courseId = feedbackService.CurrentCourseId });
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return BadRequest(ex.Message);
         }
+    }
 
-        [Route("[action]/{feedbackId:int}")]
-        public async Task<IActionResult> Delete(int feedbackId)
+    [HttpPost]
+    public async Task<IActionResult> Create(Feedback newFeedback) {
+        Console.WriteLine("POST: " + Request.GetDisplayUrl());
+        try {
+            await this.feedbackService.CreateFeedbackAsync(newFeedback);
+            return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });
+        }
+        catch (Exception ex) {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Route("Edit/{feedbackId:int?}")]
+    public async Task<IActionResult> GetFeedbackChangeMenu(int feedbackId) {
+        var feedback = await feedbackService.GetFeedbackById(feedbackId);
+
+        return View("FeedbackChangeMenu", feedback);
+    }
+
+    [HttpPost]
+    [Route("[action]/{feedbackId:int}")]
+    public async Task<IActionResult> Change(Feedback feedback, int feedbackId)
+    {
+        try
         {
-            try
-            {
-                await this.feedbackService.DeleteFeedbackAsync(feedbackId);
-                return base.RedirectToAction("GetFeedbacks", new { courseId = feedbackService.CurrentCourseId });
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await this.feedbackService.PutFeedbackAsync(feedbackId, feedback);
+            return base.RedirectToAction("GetFeedbacks", new { courseId = feedbackService.CurrentCourseId });
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Route("[action]/{feedbackId:int}")]
+    public async Task<IActionResult> Delete(int feedbackId)
+    {
+        try
+        {
+            await this.feedbackService.DeleteFeedbackAsync(feedbackId);
+            return base.RedirectToAction("GetFeedbacks", new { courseId = feedbackService.CurrentCourseId });
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }

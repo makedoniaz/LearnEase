@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
