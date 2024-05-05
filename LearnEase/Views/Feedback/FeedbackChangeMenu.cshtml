@@ -11,78 +11,42 @@
         border: 1px solid #d3d3d3;
         border-radius: 15px;
     }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .feedback-rating {
-        margin-bottom: 20px;
-    }
 </style>
 
-<div>
+<div class="change-page">
     <form class="feedback-form" action="/Feedback/Change/@feedback.Id" method="post">
-        <div class="form-group">
-            <label for="exampleFormControlTextarea1">Feedback</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text" >@feedback.Text</textarea>
+        <div class="form-text mb-3">
+            <label class="mb-3 h5 text-dark" for="feedback-textarea">Feedback:</label>
+            <textarea class="form-control" id="feedback-textarea" rows="3" name="text" >@feedback.Text</textarea>
         </div>
 
-        <div class="feedback-rating">
-            <div class="feedback-heading">
-                Rate course
+        <div class="form-rating mb-4">
+            <div class="rating-heading h5 mb-2">
+                Rate course:
             </div>
 
              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio1" value="1" name="Rating">
-                <label class="form-check-label" for="inlineRadio1">1</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating1" value="1" name="Rating">
+                <label class="form-check-label" for="rating1">1</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio2" value="2">
-                <label class="form-check-label" for="inlineRadio2">2</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating2" value="2">
+                <label class="form-check-label" for="rating2">2</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio3" value="3">
-                <label class="form-check-label" for="inlineRadio2">3</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating3" value="3">
+                <label class="form-check-label" for="rating3">3</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio4" value="4">
-                <label class="form-check-label" for="inlineRadio2">4</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating4" value="4">
+                <label class="form-check-label" for="rating4">4</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio5" value="5">
-                <label class="form-check-label" for="inlineRadio2">5</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating5" value="5">
+                <label class="form-check-label" for="rating5">5</label>
             </div>
         </div>
 
         <button class="change-btn btn btn-dark px-4">Change feedback</button>
     </form>
 </div>
-
-<script>
-
-    var button = document.querySelector(".change-btn")
-    button.addEventListener("click", ChangeFeedbackHandler)
-
-    async function ChangeFeedbackHandler(e) {
-        var feedback = @feedback
-
-        await fetch('/Feedback/' + @feedback.Id, { 
-                    method: 'PUT',
-                    body: feedback,
-                    headers: {  
-                        'Content-type': 'application/json; charset=UTF-8'
-                    }
-            })
-            .then((response) => {
-                if (!response.ok)
-                    throw new Error(response.statusText)
-            })
-            .catch((err) => console.log(err.message));
-    }
-</script>

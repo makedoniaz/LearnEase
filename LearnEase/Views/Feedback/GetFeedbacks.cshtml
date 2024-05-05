@@ -1,54 +1,44 @@
 @using LearnEase.Models;
 @model IEnumerable<Feedback>
 
+@{
+    var feedbacks = Model;
+}
+
 <style>
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .feedback-heading {
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
     .feedback-form {
         padding: 25px;
         border: 1px solid #d3d3d3;
         border-radius: 15px;
     }
 
-    .feedback-rating {
-        margin-bottom: 20px;
-    }
-
     .list-item {
         border: 1px solid #d3d3d3;
         border-radius: 15px;
-        padding: 30px 30px 30px 30px;
+        padding: 30px;
     }
 
     .item-text-info  {
-        font-size: 18px;
+        font-size: 19px;
     }
 
-    .item-rating {
+    .item-date {
+        font-size: 16px;
+        color: #303030;
+    }
+
+    .item-rating-info {
         font-size: 26px;
     }
 
     .item-functionality {
         font-size: 17px;
     }
-
 </style>
 
-<div class="main-container">
-    <div class="feedbacks">
-        @foreach (var feedback in Model)
+<div class="feedbacks-page">
+    <div class="feedbacks-list mb-5">
+        @foreach (var feedback in feedbacks)
         {
             <div class="list-item mb-4" id="@feedback.Id" >
                 <div class="info-wrapper d-flex justify-content-between align-items-center">
@@ -57,75 +47,76 @@
                         @(feedback.Username)
                         </div>
 
-                        <div class="item-text mb-2">
+                        <div class="item-text mb-4">
                             @(feedback.Text)
                         </div>
 
-                        <div class="item-date mb-3">
+                        <div class="item-date mb-2">
                             @(feedback.CreationDate)
                         </div>
                     </div>
 
-                    <div class="item-rating feedback-item-text">
+                    <div class="item-rating-info">
                         @(feedback.Rating ?? 0)/5
                     </div>
                 </div>
 
                 <div class="item-functionality">
-                    <a href="/Feedback/Delete/@feedback.Id" class="delete-btn text-danger" onclick="DeleteFeedback(@feedback.Id)">Delete</a> |
-                    <a href="/Feedback/Edit/@feedback.Id" class="edit-ref text-dark">Edit</a>
+                    <a href="/Feedback/Delete/@feedback.Id" class="text-danger">Delete</a> |
+                    <a href="/Feedback/Edit/@feedback.Id" class="text-dark">Edit</a>
                 </div>
             </div>
         }
     </div>
 
     <form class="feedback-form" action="/Feedback" method="post">
-        <div class="form-group">
-            <label for="exampleFormControlInput1">Username</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Your username" name="Username">
-        </div>
-        <div class="form-group">
-            <label for="exampleFormControlTextarea1">Feedback</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="text"></textarea>
+
+        <div class="form-group mb-4">
+            <label class="mb-3 h5"  for="feedback-username">Username</label>
+            <input type="text" class="form-control" id="feedback-username" placeholder="Your username" name="Username">
         </div>
 
-        <div class="feedback-rating">
-            <div class="feedback-heading">
-                Rate course
+        <div class="form-text mb-4">
+            <label class="mb-3 h5 text-dark" for="feedback-textarea">Feedback:</label>
+            <textarea class="form-control" id="feedback-textarea" rows="3" name="text" ></textarea>
+        </div>
+
+        <div class="form-rating mb-4">
+            <div class="rating-heading h5 mb-2">
+                Rate course:
             </div>
 
              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio1" value="1" name="Rating">
-                <label class="form-check-label" for="inlineRadio1">1</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating1" value="1" name="Rating">
+                <label class="form-check-label" for="rating1">1</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio2" value="2">
-                <label class="form-check-label" for="inlineRadio2">2</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating2" value="2">
+                <label class="form-check-label" for="rating2">2</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio3" value="3">
-                <label class="form-check-label" for="inlineRadio2">3</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating3" value="3">
+                <label class="form-check-label" for="rating3">3</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio4" value="4">
-                <label class="form-check-label" for="inlineRadio2">4</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating4" value="4">
+                <label class="form-check-label" for="rating4">4</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="inlineRadio5" value="5">
-                <label class="form-check-label" for="inlineRadio2">5</label>
+                <input class="form-check-input" type="radio" name="Rating" id="rating5" value="5">
+                <label class="form-check-label" for="rating5">5</label>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-dark px-4">Add feedback</button>
+        <button class="change-btn btn btn-dark px-4">Add feedback</button>
     </form>
-        
 </div>
 
 
-<script> 
+@* <script> 
     var feedbacksDiv = document.querySelector('.feedbacks');
-     //feedbacksDiv.addEventListener("click", FeedbackEventHandler)
-@* 
+    feedbacksDiv.addEventListener("click", FeedbackEventHandler)
+
     function DeleteFeedback(feedbackId) {
         return fetch('/Feedback/' + feedbackId, { method: 'DELETE' })
             .then((response) => {
@@ -135,7 +126,7 @@
                 console.log("Feedback was successfully deleted!")
             })
             .catch((err) => console.log(err.message));
-    } *@
+    }
 
     async function FeedbackEventHandler(e) {
         var clickTarget = e.target;
@@ -152,5 +143,4 @@
             }
         }
     }
-    
-</script>
+</script> *@
