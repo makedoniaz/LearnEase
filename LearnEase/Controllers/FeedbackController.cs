@@ -17,8 +17,6 @@ public class FeedbackController : Controller
 
     [HttpGet("{courseId:int}")]
     public async Task<IActionResult> GetFeedbacks(int courseId) {
-        Console.WriteLine("GET: " + Request.GetDisplayUrl());
-
         try
         {
             var feedbacks = await this.feedbackService.GetAllFeedbacksByCourseIdAsync(courseId);
@@ -32,7 +30,6 @@ public class FeedbackController : Controller
 
     [HttpPost]
     public async Task<IActionResult> Create(Feedback newFeedback) {
-        Console.WriteLine("POST: " + Request.GetDisplayUrl());
         try {
             await this.feedbackService.CreateFeedbackAsync(newFeedback);
             return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });

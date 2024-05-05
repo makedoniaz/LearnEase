@@ -22,7 +22,6 @@ namespace LearnEase.Repositories
             return feedback;
         }
 
-
         public async Task<IEnumerable<Feedback>> GetAllByCourseIdAsync(int courseId)
         {
             using var connection = new SqlConnection(connectionString);
@@ -68,7 +67,7 @@ namespace LearnEase.Repositories
                     sql: @"update Feedbacks 
                         set 
                         Text = @Text,
-                        Rating = @Rating
+                        Rating = @Rating,
                         CreationDate = @CreationDate
                         where Id = @id",
                     param: new {
