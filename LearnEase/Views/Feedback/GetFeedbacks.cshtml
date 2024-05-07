@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="item-functionality">
-                    <a href="/Feedback/Delete/@feedback.Id" class="text-danger">Delete</a> |
+                    <a href="#" onclick="DeleteFeedbackHandler(@feedback.Id)" class="text-danger">Delete</a> |
                     <a href="/Feedback/Edit/@feedback.Id" class="text-dark">Edit</a>
                 </div>
             </div>
@@ -113,34 +113,23 @@
 </div>
 
 
-@* <script> 
-    var feedbacksDiv = document.querySelector('.feedbacks');
-    feedbacksDiv.addEventListener("click", FeedbackEventHandler)
-
-    function DeleteFeedback(feedbackId) {
-        return fetch('/Feedback/' + feedbackId, { method: 'DELETE' })
+<script> 
+    function DeleteFeedbackHandler(feedbackId) {
+        fetch('/Feedback/' + feedbackId, { method: 'DELETE' })
             .then((response) => {
                 if (!response.ok)
                     throw new Error(response.statusText)
 
+                DeleteFeedbackFromDOM(feedbackId)
                 console.log("Feedback was successfully deleted!")
             })
             .catch((err) => console.log(err.message));
     }
 
-    async function FeedbackEventHandler(e) {
-        var clickTarget = e.target;
+    function DeleteFeedbackFromDOM(feedbackId) {
+        var feedbacksList = document.querySelector('.feedbacks-list')
+        var feedback = feedbacksList.querySelector('#' + CSS.escape(feedbackId))
 
-        if (clickTarget.tagName === 'BUTTON') {
-            var feedbackId = clickTarget.parentElement.parentElement.id;
-
-            if (clickTarget.classList.contains("edit-btn")) {
-            }
-
-            else if (clickTarget.classList.contains("delete-btn")) {
-                console.log(feedbackId)
-                await DeleteFeedback(feedbackId)
-            }
-        }
+        feedback.remove()
     }
-</script> *@
+</script>

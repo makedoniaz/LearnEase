@@ -61,13 +61,14 @@ public class FeedbackController : Controller
         }
     }
 
-    [Route("[action]/{feedbackId:int}")]
+    [HttpDelete]
+    [Route("{feedbackId:int}")]
     public async Task<IActionResult> Delete(int feedbackId)
     {
         try
         {
             await this.feedbackService.DeleteFeedbackAsync(feedbackId);
-            return base.RedirectToAction("GetFeedbacks", new { courseId = feedbackService.CurrentCourseId });
+            return Ok();
         }
         catch(Exception ex)
         {
