@@ -79,7 +79,7 @@ namespace LearnEase.Repositories
                 );
 
             if (affectedRowsCount <= 0)
-                throw new Exception("Insert error!");
+                throw new Exception("Put error!");
         }
 
         public async Task DeleteAsync(int id)

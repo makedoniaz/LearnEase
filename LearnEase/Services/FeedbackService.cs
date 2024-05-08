@@ -21,8 +21,8 @@ namespace LearnEase.Services
 
         public async Task PutFeedbackAsync(int id, Feedback feedback)
         {
-            bool isNullInput = feedback.GetType().GetProperties()
-                        .All(p => p.GetValue(feedback) != null);
+            var props = feedback.GetType().GetProperties().Where(p => p.Name != "Rating");
+            bool isNullInput = !props.All(p => p.GetValue(feedback) != null);
 
             if (isNullInput)
                 throw new ArgumentNullException(nameof(feedback));

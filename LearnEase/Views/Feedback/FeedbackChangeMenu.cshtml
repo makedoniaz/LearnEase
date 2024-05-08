@@ -11,13 +11,27 @@
         border: 1px solid #d3d3d3;
         border-radius: 15px;
     }
+
+    .error-div {
+        color: red;
+        font-size: 13px;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .visible {
+        display: block;
+    }
 </style>
 
 <div class="change-page">
-    <form class="feedback-form" action="/Feedback/Change/@feedback.Id" method="post">
+    <form name="change-form" class="feedback-form">
         <div class="form-text mb-3">
             <label class="mb-3 h5 text-dark" for="feedback-textarea">Feedback:</label>
-            <textarea class="form-control" id="feedback-textarea" rows="3" name="text" required maxlength="500">@feedback.Text</textarea>
+            <textarea class="feedback-text form-control mb-1" id="feedback-textarea" rows="3" name="text" maxlength="500" required>@feedback.Text</textarea>
+            <div class="error-div hide">This field cannot be empty!</div>
         </div>
 
         <div class="form-rating mb-4">
@@ -47,6 +61,75 @@
             </div>
         </div>
 
-        <button class="change-btn btn btn-dark px-4 btn-lg">Change</button>
+        <button type="submit" class="change-btn btn btn-dark px-4 btn-lg">Change</button>
     </form>
 </div>
+
+<script> 
+    var button = document.querySelector('.change-btn')
+    button.addEventListener('click', (e) => {
+        e.preventDefault()
+        PutFeedbackHandler()
+    })
+
+    function PutFeedbackHandler() {
+        var feedback = GetFeedbackFromForm()
+
+        if (feedback === null)
+            return;
+        
+        fetch('/Feedback/' + @feedback.Id,
+            {
+                method: 'PUT',
+                body: JSON.stringify(feedback),
+                headers:
+                {
+                    'Content-type': 'application/json; charset=UTF-8' 
+                }
+            }
+        )
+        .then((response) => {
+            if (!response.ok)
+                throw new Error(response.statusText)
+
+            RedirectToGetFeedbacksPage(@feedback.CourseId)
+        })
+        .catch((err) => console.log(err.message));
+    }
+
+    function GetFeedbackFromForm() {
+        var feedbackText = document.forms['change-form']['text'].value
+        var isValid = ValidateFeedbackInputHandler(feedbackText)
+
+        if (!isValid)
+            return null;
+
+        var radiosArr = Array.from(document.forms['change-form']['Rating'])
+
+        var checkedRadio = radiosArr.find((radio) => radio.checked)
+        var feedbackRating = checkedRadio ? checkedRadio.value : null
+
+        return {
+            Id: @feedback.Id,
+            Username: '@feedback.Username',
+            Text: feedbackText,
+            Rating: feedbackRating,
+            CourseId: @feedback.CourseId,
+            CreationDate: new Date(@feedback.CreationDate.ToString("yyyy,MM-1,dd"))
+        }
+    }
+
+    function RedirectToGetFeedbacksPage(courseId) {
+        window.location.assign('/Feedback/' + courseId);
+    }
+
+    function ValidateFeedbackInputHandler(feedbackText) {
+
+
+        var isInvalid = (feedbackText.trim().length === 0)
+        var errorDiv = document.querySelector('.error-div')
+        errorDiv.classList.toggle('visible', isInvalid)
+
+        return !isInvalid
+    }
+</script>

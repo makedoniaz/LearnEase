@@ -1,3 +1,4 @@
+using System.Text.Json;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -39,21 +40,24 @@ public class FeedbackController : Controller
         }
     }
 
-    [Route("Edit/{feedbackId:int?}")]
+    [Route("Edit/{feedbackId:int}")]
     public async Task<IActionResult> GetFeedbackChangeMenu(int feedbackId) {
         var feedback = await feedbackService.GetFeedbackById(feedbackId);
 
         return View("FeedbackChangeMenu", feedback);
     }
 
-    [HttpPost]
-    [Route("[action]/{feedbackId:int}")]
-    public async Task<IActionResult> Change(Feedback feedback, int feedbackId)
+    [HttpPut("{feedbackId:int}")]
+    public async Task<IActionResult> Change(int feedbackId,[FromBody] Feedback feedback)
     {
         try
         {
+            // var streamReader = new StreamReader(Request.Body);
+            // var requestBody = await streamReader.ReadToEndAsync();
+            // var newFeedback = JsonSerializer.Deserialize<Feedback>(requestBody);
+
             await this.feedbackService.PutFeedbackAsync(feedbackId, feedback);
-            return base.RedirectToAction("GetFeedbacks", new { courseId = feedbackService.CurrentCourseId });
+            return Ok();
         }
         catch(Exception ex)
         {
@@ -61,8 +65,7 @@ public class FeedbackController : Controller
         }
     }
 
-    [HttpDelete]
-    [Route("{feedbackId:int}")]
+    [HttpDelete("{feedbackId:int}")]
     public async Task<IActionResult> Delete(int feedbackId)
     {
         try
