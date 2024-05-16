@@ -7,12 +7,16 @@ namespace LearnEase.Repositories
 {
     public class LogDapperRepository : ILogRepository
     {
-        private readonly string connectionString = "Server=localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin; Password=admin";
+        private readonly string connectionString;
+
+        public LogDapperRepository(IConfiguration config)
+        {
+            this.connectionString = config.GetConnectionString("MsSql") ?? "";
+        }
 
         public async Task CreateAsync(Log log)
         {
             using var connection = new SqlConnection(connectionString);
-
             var affectedRowsCount = await connection.ExecuteAsync(
                 sql:@"insert into Logs([Url], [RequestBody], [ResponseBody], [CreationDate], [EndDate], [StatusCode], [HttpMethod])
                         values (@Url, @RequestBody, @ResponseBody, @CreationDate, @EndDate, @StatusCode, @HttpMethod)",
