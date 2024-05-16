@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 
 namespace LearnEase.Services
 {
-    public class LogBuilderService : ILogBuilderService
+    public class LogBuilderService
     {
         private readonly Log log;
 
