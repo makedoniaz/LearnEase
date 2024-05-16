@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LearnEase.Services;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -20,6 +16,7 @@ namespace LearnEase.Middlewares
         {
             this.service = service;
             this.logBuilder = new LogBuilderService();
+            this.isLoggerOn = config.GetSection("LoggingOptions:isLoggerOn").Get<bool>();
         }
 
 
@@ -34,12 +31,21 @@ namespace LearnEase.Middlewares
             }
 
             this.logBuilder.SetInitialInfo(request.GetDisplayUrl());
-            await this.logBuilder.SetRequestBodyAsync(request);
+            await this.logBuilder.SetRequestBodyAsync(context);
 
             await next.Invoke(context);
 
-            await this.logBuilder.SetRequestBodyAsync(request);
+            await this.logBuilder.SetResponseBodyAsync(context);
             this.logBuilder.SetFinishInfo(response.StatusCode, request.Method);
+
+            var log = this.logBuilder.GetLog();
+
+            try {
+                await this.service.CreateLogAsync(log);
+            }
+            catch (Exception ex){
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

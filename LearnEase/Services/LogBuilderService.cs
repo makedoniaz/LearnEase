@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LearnEase.Extensions;
+using System.Text;
 using LearnEase.Models;
-using LearnEase.Services.Interfaces;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace LearnEase.Services
 {
@@ -20,16 +14,34 @@ namespace LearnEase.Services
             this.log.CreationDate = DateTime.Now;
         }
 
-        public async Task SetRequestBodyAsync(HttpRequest request)
+        public async Task SetRequestBodyAsync(HttpContext context)
         {
-            var requestBody = await request.Body.ReadAsStringAsync();
-            this.log.RequestBody = requestBody;
+            var request = context.Request;
+
+            request.EnableBuffering();
+            var requestBodyStr = await new StreamReader(request.Body, Encoding.UTF8).ReadToEndAsync();
+            request.Body.Position = 0;
+
+            this.log.RequestBody = requestBodyStr;
         }
 
-        public async Task SetResponseBodyAsync(HttpResponse response)
+        public async Task SetResponseBodyAsync(HttpContext context)
         {
-            var responseBody = await response.Body.ReadAsStringAsync();
-            this.log.ResponseBody = responseBody;
+            Stream originalBody = context.Response.Body;
+            var response = context.Response;
+
+            using var memStream = new MemoryStream();
+            response.Body = memStream;
+
+            memStream.Position = 0;
+            var responseBodyStr = await new StreamReader(memStream).ReadToEndAsync();
+
+            memStream.Position = 0;
+            await memStream.CopyToAsync(originalBody);
+
+            response.Body = originalBody;
+
+            this.log.ResponseBody = responseBodyStr;
         }
 
         public void SetFinishInfo(int statusCode, string httpMethod)

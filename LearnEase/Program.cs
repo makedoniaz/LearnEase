@@ -1,3 +1,4 @@
+using LearnEase.Middlewares;
 using LearnEase.Repositories;
 using LearnEase.Repositories.Interfaces;
 using LearnEase.Services;
@@ -7,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<ILogRepository, LogDapperRepository>();
+builder.Services.AddScoped<ILogService, LogService>();
+builder.Services.AddScoped<LogMiddleware>();
 
 builder.Services.AddScoped<ICourseRepository, CourseDapperRepository>();
 builder.Services.AddScoped<ICourseService, CourseService>();
@@ -31,6 +36,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseMiddleware<LogMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

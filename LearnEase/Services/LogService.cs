@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
+using LearnEase.Services.Interfaces;
 
 namespace LearnEase.Services
 {
-    public class LogService
+    public class LogService : ILogService
     {
         private readonly ILogRepository repository;
         
