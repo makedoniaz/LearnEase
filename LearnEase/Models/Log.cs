@@ -15,7 +15,7 @@ namespace LearnEase.Models
 
         public string? ResponseBody { get; set; }
 
-        public DateTime CreatinDate { get; set; }
+        public DateTime CreationDate { get; set; }
 
         public DateTime EndDate { get; set; }
 
