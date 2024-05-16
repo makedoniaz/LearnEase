@@ -11,15 +11,9 @@ namespace LearnEase.Services
 {
     public class LogBuilderService
     {
-        private readonly Log log;
+        private Log log = new();
 
-        public LogBuilderService(Log log)
-        {
-            if (log is null)
-                throw new ArgumentNullException(nameof(log));
-
-            this.log = log;
-        }
+        public void Reset() => this.log = new Log();
 
         public void SetInitialInfo(string url) {
             this.log.Url = url;
@@ -44,5 +38,13 @@ namespace LearnEase.Services
             log.HttpMethod = httpMethod;
             log.EndDate = DateTime.Now;
         }
-    }
+
+        public Log GetLog() 
+        {
+            var logResult = this.log;
+            this.Reset();
+
+            return logResult;
+        }
+    }   
 }
