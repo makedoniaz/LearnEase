@@ -2,8 +2,9 @@ using System.Data.SqlClient;
 using Dapper;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
+using LearnEase.Repositories.Interfaces.Base;
 
-namespace LearnEase.Repositories
+namespace LearnEase.Repositories.Dapper
 {
     public class CourseDapperRepository : ICourseRepository
     {
@@ -18,7 +19,7 @@ namespace LearnEase.Repositories
         {
             using var connection = new SqlConnection(connectionString);
 
-            return await connection.QueryAsync<Course>(
+            return (IQueryable<Course>)await connection.QueryAsync<Course>(
                 sql: $@"select * from Courses 
                     order by CreationDate desc"
             );

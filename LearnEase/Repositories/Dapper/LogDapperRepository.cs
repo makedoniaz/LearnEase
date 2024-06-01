@@ -3,7 +3,7 @@ using Dapper;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
 
-namespace LearnEase.Repositories
+namespace LearnEase.Repositories.Dapper
 {
     public class LogDapperRepository : ILogRepository
     {

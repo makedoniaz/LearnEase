@@ -21,6 +21,9 @@ public class FeedbackController : Controller
         try
         {
             var feedbacks = await this.feedbackService.GetAllFeedbacksByCourseIdAsync(courseId);
+            TempData["courseId"] = courseId;
+
+
             return View(feedbacks);
         }
         catch(Exception ex)
@@ -32,8 +35,8 @@ public class FeedbackController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(Feedback newFeedback) {
         try {
-            await this.feedbackService.CreateFeedbackAsync(newFeedback);
-            return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });
+            await this.feedbackService.CreateFeedbackAsync(newFeedback, (int)TempData["courseId"]);
+            return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = TempData["courseId"] });
         }
         catch (Exception ex) {
             return BadRequest(ex.Message);

@@ -3,7 +3,7 @@ using Dapper;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
 
-namespace LearnEase.Repositories
+namespace LearnEase.Repositories.Dapper
 {
     public class FeedbackDapperRepository : IFeedbackRepository
     {
@@ -15,7 +15,7 @@ namespace LearnEase.Repositories
             this.connectionString = config.GetConnectionString("MsSql") ?? "";
         }
 
-        public async Task<Feedback> GetById(int id)
+        public async Task<Feedback?> GetByIdAsync(int id)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -65,7 +65,7 @@ namespace LearnEase.Repositories
         }
 
 
-        public async Task PutAsync(int id, Feedback feedback)
+        public async Task<int> PutAsync(int id, Feedback feedback)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -84,8 +84,7 @@ namespace LearnEase.Repositories
                     }
                 );
 
-            if (affectedRowsCount <= 0)
-                throw new Exception("Put error!");
+            return affectedRowsCount;
         }
 
         public async Task DeleteAsync(int id)

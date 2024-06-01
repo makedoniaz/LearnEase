@@ -6,8 +6,6 @@ namespace LearnEase.Services
 {
     public class FeedbackService : IFeedbackService
     {
-        public int CurrentCourseId { get; set; }
-
         private readonly IFeedbackRepository feedbackRepository;
 
         public FeedbackService(IFeedbackRepository feedbackRepository) {
@@ -16,26 +14,26 @@ namespace LearnEase.Services
 
         public async Task<Feedback> GetFeedbackById(int id)
         {
-            return await feedbackRepository.GetById(id);
+            var feedback = await feedbackRepository.GetByIdAsync(id);
+
+            if (feedback is null)
+                throw new ArgumentException($"Cannot find feedback by id: {id}.");
+
+            return feedback;
         }
 
         public async Task PutFeedbackAsync(int id, Feedback feedback)
         {
-            var props = feedback.GetType().GetProperties().Where(p => p.Name != "Rating");
-            bool isNullInput = !props.All(p => p.GetValue(feedback) != null);
+            var hasChanged = await feedbackRepository.PutAsync(id, feedback) == 1;
 
-            if (isNullInput)
-                throw new ArgumentNullException(nameof(feedback));
-
-            feedback.CreationDate = DateTime.Now;
-
-            await feedbackRepository.PutAsync(id, feedback);
+            if (!hasChanged)
+                throw new ArgumentException($"Cannot change feedback.");
         }
 
-        public async Task CreateFeedbackAsync(Feedback feedback)
+        public async Task CreateFeedbackAsync(Feedback feedback, int courseId)
         {
             feedback.CreationDate = DateTime.Now;
-            feedback.CourseId = this.CurrentCourseId;
+            feedback.CourseId = courseId;
 
             await feedbackRepository.CreateAsync(feedback);
         }
@@ -47,7 +45,6 @@ namespace LearnEase.Services
 
         public async Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId)
         {
-            CurrentCourseId = courseId;
             return await feedbackRepository.GetAllByCourseIdAsync(courseId);
         }
     }
