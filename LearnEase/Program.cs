@@ -1,13 +1,19 @@
+using LearnEase.Data;
 using LearnEase.Middlewares;
 using LearnEase.Repositories;
 using LearnEase.Repositories.Interfaces;
 using LearnEase.Services;
 using LearnEase.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<LearnEaseDbContext>(
+    (optionsBuilder) => optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"))
+);
 
 builder.Services.AddScoped<ILogRepository, LogDapperRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
