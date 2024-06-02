@@ -1,3 +1,5 @@
+using System.Reflection;
+using FluentValidation;
 using LearnEase.Data;
 using LearnEase.Middlewares;
 using LearnEase.Repositories.Dapper;
@@ -26,6 +28,7 @@ builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackEfCoreRepository>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 

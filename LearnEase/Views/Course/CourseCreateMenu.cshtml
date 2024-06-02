@@ -1,0 +1,63 @@
+@model Course;
+
+
+<style>
+    .shadow {
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    }
+
+    .round {
+        border: 1px solid #d3d3d3;
+        border-radius: 15px;
+    }
+
+    .courses-action {
+        margin-bottom: 100px;
+    }
+
+    .courses-create-form {
+        width: 500px;
+        padding: 30px;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
+    }
+
+    .main-header {
+        margin-bottom: 50px;
+    }
+
+    .courses-create-form {
+        padding: 25px;
+    }
+</style>
+
+<div>
+    <div class="courses-action"> 
+        <div class="main-header">
+                <h1>Create course</h1>
+        </div>
+
+        <div class="courses-create-form round">
+            <form asp-route="CourseCreateApi">
+                <div class="form-item mb-4">
+                    <label asp-for="Name" class="d-block h5 mb-2 text-dark">Name:</label>
+                    <input asp-for="Name" class="form-control" type="text">
+                    <span class="mt-2 d-block text-danger" asp-validation-for="Name"></span>
+                </div>
+
+                <div class="form-item mb-4">
+                    <label asp-for="Description" class="d-block h5 mb-2 text-dark">Description:</label>
+                    <input asp-for="Description" class="form-control" type="text">
+                    <span class="mt-2 d-block text-danger" asp-validation-for="Description"></span>
+                </div>
+
+                <div class="form-item mb-4">
+                    <label asp-for="AmountOfLectures" class="d-block h5 mb-2 text-dark">Amount of lectures:</label>
+                    <input asp-for="AmountOfLectures" class="form-control" type="number">
+                    <span class="mt-2 d-block text-danger" asp-validation-for="AmountOfLectures"></span>
+                </div>
+
+                <button class="form-btn btn btn-dark px-4 btn-lg">Create</button>
+            </form>
+        </div>
+    </div>
+</div>

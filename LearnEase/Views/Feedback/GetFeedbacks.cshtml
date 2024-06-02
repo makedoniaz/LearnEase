@@ -1,8 +1,8 @@
 @using LearnEase.Models;
-@model IEnumerable<Feedback>
+@model IEnumerable<Feedback>;
 
 @{
-    var feedbacks = Model;
+    var feedbacks = @Model;
 }
 
 <style>
@@ -35,9 +35,19 @@
     .item-functionality {
         font-size: 17px;
     }
+
+    .page-functionality {
+        font-size: 18px;
+    }
 </style>
 
 <div class="feedbacks-page">
+    <div class="page-functionality">
+        <a class="btn btn-dark px-3 btn-lg" asp-route="CreateFeedbackView">Create Feedback</a>
+    </div>
+
+    <hr>
+
     <div class="feedbacks-list mb-5">
         @foreach (var feedback in feedbacks)
         {
@@ -69,47 +79,6 @@
             </div>
         }
     </div>
-
-    <form class="feedback-form" action="/Feedback" method="post">
-        <div class="form-group mb-4">
-            <label class="mb-3 h5"  for="feedback-username">Username:</label>
-            <input type="text" class="form-control" id="feedback-username" placeholder="Your username" name="Username" required maxlength="100">
-        </div>
-
-        <div class="form-text mb-4">
-            <label class="mb-3 h5 text-dark" for="feedback-textarea">Feedback:</label>
-            <textarea class="form-control" id="feedback-textarea" rows="3" name="text" required maxlength="500"></textarea>
-        </div>
-
-        <div class="form-rating mb-4">
-            <div class="rating-heading h5 mb-2">
-                Rate course:
-            </div>
-
-             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="rating1" value="1">
-                <label class="form-check-label" for="rating1">1</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="rating2" value="2">
-                <label class="form-check-label" for="rating2">2</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="rating3" value="3">
-                <label class="form-check-label" for="rating3">3</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="rating4" value="4">
-                <label class="form-check-label" for="rating4">4</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Rating" id="rating5" value="5">
-                <label class="form-check-label" for="rating5">5</label>
-            </div>
-        </div>
-
-        <button class="change-btn btn btn-dark px-4 btn-lg">Add feedback</button>
-    </form>
 </div>
 
 

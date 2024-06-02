@@ -1,6 +1,11 @@
 @using System.Text.Json
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 
 @model IEnumerable<Course>;
+
+@{
+    var courses = @Model;
+}
 
 <style>
     .shadow {
@@ -54,46 +59,17 @@
 </style>
 
 <div>
-    <div class="courses-action"> 
-        <div class="main-header">
-                <h1>Create course</h1>
-        </div>
-
-        <div class="courses-create-form round">
-            <form action="/Course" method="post">
-                <div class="form-item mb-4">
-                    <div class="item-label">
-                        <label class="h5 mb-2 text-dark">Name:</label>
-                    </div>
-                    <input class="form-control" type="text" name="Name" required maxlength="100">
-                </div>
-
-                <div class="form-item mb-4">
-                    <div class="item-label">
-                        <label class="h5 mb-2 text-dark">Description:</label>
-                    </div>
-                    <input class="form-control" type="text" name="Description" required maxlength="500">
-                </div>
-
-                <div class="form-item mb-4">
-                    <div class="item-label">
-                        <label class="h5 mb-2 text-dark">Amount of lectures:</label>
-                    </div>
-                    <input class="form-control" type="number" name="AmountOfLectures" required min="1">
-                </div>
-
-                <button class="form-btn btn btn-dark px-4 btn-lg">Create</button>
-            </form>
-        </div>
+    <div class="page-functionality">
+        <a class="btn btn-dark px-3 btn-lg" asp-route="CourseCreateView">Create Course</a>
     </div>
-    
+    <hr>
     <div class="courses-info">
         <div class="main-header">
             <h1>All courses</h1>
         </div>
 
         <div class="courses-list">
-            @foreach (var course in Model)
+            @foreach (var course in courses)
             {
                 <div class="list-item round">
                     <div class="item-name">
