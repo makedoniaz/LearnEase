@@ -85,6 +85,10 @@
                         @(course?.CreationDate.ToString() ?? "UNKNOWN")
                     </div>
 
+                    <div>
+                        <img src="@course?.CourseLogoPath" />
+                    </div>
+
                     <a href="/Feedback/@(course?.Id)" class="btn btn-secondary btn-dark active item-button px-4" role="button" aria-pressed="true">Feedbacks</a>
                 </div>
             }

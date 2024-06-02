@@ -34,7 +34,7 @@ public class CourseController : Controller
     
 
     [HttpPost(Name = "CourseCreateApi")]
-    public async Task<IActionResult> Create([FromForm] Course newCourse) {
+    public async Task<IActionResult> Create([FromForm] Course newCourse, IFormFile logo) {
         try {
             var validationResult = await validator.ValidateAsync(newCourse);
 
@@ -45,7 +45,9 @@ public class CourseController : Controller
                 return base.View("CourseCreateMenu");
             }
 
+            await this.courseService.SetCourseLogo(newCourse, logo);
             await this.courseService.CreateCourseAsync(newCourse);
+            
             return base.RedirectToAction(actionName: "Index");
         }
         catch (Exception ex) {
