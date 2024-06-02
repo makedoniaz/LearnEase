@@ -8,6 +8,6 @@ namespace LearnEase.Services.Interfaces
         
         Task CreateCourseAsync(Course newCourse);
 
-        Task SetCourseLogo(Course course, IFormFile logo);
+        Task SetCourseLogo(Course course, IFormFile? logo);
     }
 }

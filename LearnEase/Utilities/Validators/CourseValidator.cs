@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation;
 using LearnEase.Models;
 
@@ -13,7 +9,7 @@ namespace LearnEase.Utilities.Validators
         {
             base.RuleFor(c => c.Name)
                 .NotEmpty()
-                .MaximumLength(5);
+                .MaximumLength(100);
 
             base.RuleFor(c => c.Description)
                 .NotEmpty()

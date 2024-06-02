@@ -34,7 +34,7 @@ public class CourseController : Controller
     
 
     [HttpPost(Name = "CourseCreateApi")]
-    public async Task<IActionResult> Create([FromForm] Course newCourse, IFormFile logo) {
+    public async Task<IActionResult> Create([FromForm] Course newCourse, IFormFile? logo) {
         try {
             var validationResult = await validator.ValidateAsync(newCourse);
 
