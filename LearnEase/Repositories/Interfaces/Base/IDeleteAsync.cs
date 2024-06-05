@@ -2,6 +2,6 @@ namespace LearnEase.Repositories.Interfaces.Base
 {
     public interface IDeleteAsync<TId>
     {
-        public Task DeleteAsync(TId entityId);
+        public Task<int> DeleteAsync(TId entityId);
     }
 }

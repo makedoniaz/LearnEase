@@ -25,7 +25,7 @@ namespace LearnEase.Repositories.Dapper
             );
         }
 
-        public async Task CreateAsync(Course course)
+        public async Task<int> CreateAsync(Course course)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -40,8 +40,7 @@ namespace LearnEase.Repositories.Dapper
                 course.CreationDate,
             });
 
-            if (affectedRowsCount <= 0)
-                throw new Exception("Insert error!");
+            return affectedRowsCount;
         }
     }
 }

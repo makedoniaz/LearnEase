@@ -25,7 +25,10 @@ namespace LearnEase.Services
 
             newCourse.CreationDate = DateTime.Now;
 
-            await this.courseRepository.CreateAsync(newCourse);
+            var changesCount = await this.courseRepository.CreateAsync(newCourse);
+
+            if (changesCount == 0)
+                throw new Exception("Course creation didn't apply!");
         }
 
         public async Task SetCourseLogo(Course course, IFormFile? logo) {

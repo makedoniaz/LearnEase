@@ -24,10 +24,10 @@ namespace LearnEase.Services
 
         public async Task PutFeedbackAsync(int id, Feedback feedback)
         {
-            var hasChanged = await feedbackRepository.PutAsync(id, feedback) == 1;
+            var changesCount = await feedbackRepository.PutAsync(id, feedback);
 
-            if (!hasChanged)
-                throw new ArgumentException($"Cannot change feedback.");
+            if (changesCount == 0)
+                throw new Exception("Feedback change didn't apply!");
         }
 
         public async Task CreateFeedbackAsync(Feedback feedback, int courseId)
@@ -35,12 +35,18 @@ namespace LearnEase.Services
             feedback.CreationDate = DateTime.Now;
             feedback.CourseId = courseId;
 
-            await feedbackRepository.CreateAsync(feedback);
+            var changesCount = await feedbackRepository.CreateAsync(feedback);
+
+            if (changesCount == 0)
+                throw new Exception("Feedback creation didn't apply!");
         }
 
         public async Task DeleteFeedbackAsync(int id)
         {
-            await feedbackRepository.DeleteAsync(id);
+            var changesCount = await feedbackRepository.DeleteAsync(id);
+
+            if (changesCount == 0)
+                throw new Exception("Feedback delete didn't apply!");
         }
 
         public async Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId)

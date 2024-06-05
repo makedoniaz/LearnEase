@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LearnEase.Data;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
-using LearnEase.Repositories.Interfaces.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearnEase.Repositories.EfCore
@@ -29,26 +24,42 @@ namespace LearnEase.Repositories.EfCore
             return await _context.Feedbacks.FirstOrDefaultAsync((f) => f.Id == id);
         }
 
-        public async Task CreateAsync(Feedback feedback)
+        public async Task<int> CreateAsync(Feedback feedback)
         {
-            await _context.Feedbacks.AddAsync(feedback);
-            await _context.SaveChangesAsync();
+            _context.Feedbacks.Add(feedback);
+            var changedObjectsCount = await _context.SaveChangesAsync();
+
+            return changedObjectsCount;
         }
 
-        public async Task DeleteAsync(int feedbackId)
+        public async Task<int> DeleteAsync(int feedbackId)
         {
-            await _context.Feedbacks.Where((f) => f.Id == feedbackId).ExecuteDeleteAsync();
-            await _context.SaveChangesAsync();
+            var feedbackToDelete = _context.Feedbacks.FirstOrDefault(f => f.Id == feedbackId);
+
+            if (feedbackToDelete is null)
+                return 0;
+
+            _context.Feedbacks.Remove(feedbackToDelete);
+            var changedObjectsCount = await _context.SaveChangesAsync();
+
+            return changedObjectsCount;
         }
 
         public async Task<int> PutAsync(int id, Feedback feedback)
         {
-            return await _context.Feedbacks.Where((f) => f.Id == id)
-                .ExecuteUpdateAsync((setters) => setters
-                    .SetProperty(f => f.Text, feedback.Text)
-                    .SetProperty(f => f.Rating, feedback.Rating)
-                    .SetProperty(f => f.CreationDate, DateTime.Now)
-                );
+            var feedbackToUpdate = _context.Feedbacks.FirstOrDefault(f => f.Id == id);
+
+            if (feedbackToUpdate is null)
+                return 0;
+            
+            feedbackToUpdate.Text = feedback.Text;
+            feedbackToUpdate.Rating = feedback.Rating;
+            feedbackToUpdate.CreationDate = DateTime.Now;
+
+            _context.Feedbacks.Update(feedbackToUpdate);     
+            var changedObjectsCount = await _context.SaveChangesAsync();
+
+            return changedObjectsCount;
         }
     }
 }

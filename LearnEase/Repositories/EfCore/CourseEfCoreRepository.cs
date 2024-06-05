@@ -21,10 +21,12 @@ namespace LearnEase.Repositories.EfCore
             return await _context.Courses.OrderByDescending(c => c.CreationDate).ToListAsync();
         }
 
-        public async Task CreateAsync(Course course)
+        public async Task<int> CreateAsync(Course course)
         {
-            await _context.Courses.AddAsync(course);
-            await _context.SaveChangesAsync();
+            _context.Courses.Add(course);
+            var changedObjectsCount = await _context.SaveChangesAsync();
+
+            return changedObjectsCount;
         }
     }
 }

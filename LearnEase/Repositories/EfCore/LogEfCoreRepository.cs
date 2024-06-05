@@ -15,10 +15,12 @@ namespace LearnEase.Repositories.EfCore
 
         public LogEfCoreRepository(LearnEaseDbContext context) => _context = context;
 
-        public async Task CreateAsync(Log log)
+        public async Task<int> CreateAsync(Log log)
         {
             await _context.Logs.AddAsync(log);
-            await _context.SaveChangesAsync();
+            var changedObjectsCount = await _context.SaveChangesAsync();
+
+            return changedObjectsCount;
         }
     }
 }

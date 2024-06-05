@@ -43,7 +43,7 @@ namespace LearnEase.Repositories.Dapper
         }
 
 
-         public async Task CreateAsync(Feedback feedback)
+         public async Task<int> CreateAsync(Feedback feedback)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -60,8 +60,7 @@ namespace LearnEase.Repositories.Dapper
                     }
                 );
 
-            if (affectedRowsCount <= 0)
-                throw new Exception("Insert error!");
+            return affectedRowsCount;
         }
 
 
@@ -84,10 +83,10 @@ namespace LearnEase.Repositories.Dapper
                     }
                 );
 
-            return affectedRowsCount;
+                return affectedRowsCount;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -100,8 +99,7 @@ namespace LearnEase.Repositories.Dapper
                     }
                 );
 
-            if (affectedRowsCount <= 0)
-                throw new Exception("Delete error!");
+            return affectedRowsCount;
         }
     }
 }

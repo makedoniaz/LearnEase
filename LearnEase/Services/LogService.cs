@@ -21,7 +21,10 @@ namespace LearnEase.Services
             if (log is null)
                 throw new ArgumentNullException(nameof(log));
 
-            await repository.CreateAsync(log);
+            var changesCount = await repository.CreateAsync(log);
+
+            if (changesCount == 0)
+                throw new Exception("Log creation didn't apply!");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace LearnEase.Repositories.Dapper
             this.connectionString = config.GetConnectionString("MsSql") ?? "";
         }
 
-        public async Task CreateAsync(Log log)
+        public async Task<int> CreateAsync(Log log)
         {
             using var connection = new SqlConnection(connectionString);
             var affectedRowsCount = await connection.ExecuteAsync(
@@ -23,8 +23,7 @@ namespace LearnEase.Repositories.Dapper
                 param: log
             );
 
-            if (affectedRowsCount <= 0)
-                throw new Exception("Insert error!");
+            return affectedRowsCount;
         }
     }
 }
