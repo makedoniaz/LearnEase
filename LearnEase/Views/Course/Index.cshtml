@@ -1,0 +1,151 @@
+@using System.Text.Json
+
+@{
+    var coursesJson = await System.IO.File.ReadAllTextAsync("Assets/courses.json");
+
+    var courses = JsonSerializer.Deserialize<IEnumerable<Course>>(coursesJson, new JsonSerializerOptions {
+        PropertyNameCaseInsensitive = true,
+    });
+
+    courses = courses ?? new List<Course>();
+}
+
+<style>
+    .shadow {
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    }
+
+    .index-header {
+        margin-bottom: 50px;
+    }
+
+    .list-item {
+        padding: 30px;
+        margin-bottom: 50px;
+        font-size: 18px;
+    }
+
+    .list-item: :last-child {
+        margin-bottom: 0px;
+    }
+
+    .item-name {
+        margin-bottom: 15px;
+    }
+
+    .item-desc {
+        margin-bottom: 50px;
+    }
+
+    .item-lect-amount, .item-date {
+        color: #505050;
+    }
+
+
+
+
+    .courses-action {
+        margin-bottom: 100px;
+    }
+
+    .courses-action-form {
+        width: 500px;
+        
+
+       
+        padding: 30px;
+    }
+
+    .form-item  {
+        margin-bottom: 20px;
+    }
+    
+    .form-item input {
+        width: 100%;
+        padding: 12px;
+
+        border: solid 1px;
+        border-radius: 10px;
+        font-size: 17px;
+    }
+
+    .form-item .item-label {
+        font-size: 19px;
+        margin-bottom: 10px;
+    }
+
+    .form-btn {
+        font-size: 20px;
+        background-color: transparent;
+        color: black;
+        padding: 12px 36px;
+
+        margin-top: 20px;
+
+        border: solid 1px;
+        border-radius: 10px;
+    }
+
+</style>
+
+<div>
+    <div class="courses-action"> 
+        <div class="index-header">
+                <h1>Create course</h1>
+        </div>
+
+        <div class="courses-action-form shadow">
+            
+            <form action="/Course" method="post">
+                <div class="form-item">
+                    <div class="item-label">
+                        <label>Name</label>
+                    </div>
+                    <input type="text" name="Name">
+                </div>
+
+                <div class="form-item">
+                    <div class="item-label">
+                        <label>Description</label>
+                    </div>
+                    <input type="text" name="Description">
+                </div>
+
+                <div class="form-item">
+                    <div class="item-label">
+                        <label>Amount of lectures</label>
+                    </div>
+                    <input type="number" name="AmountOfLectures">
+                </div>
+
+                <button class="form-btn">Create</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="courses-info">
+        <div class="index-header">
+            <h1>All courses</h1>
+        </div>
+
+        <div class="courses-list">
+            @foreach (var course in courses)
+            {
+                <div class="list-item shadow">
+                    <div class="item-name">
+                        <h3>@(course?.Name)</h3>
+                    </div>
+                    <div class="item-desc">
+                        @(course?.Description)
+                    </div>
+                    <div class="item-lect-amount">
+                        Amount of lectures: @(course?.AmountOfLectures ?? 0)
+                    </div>
+                    <div class="item-date">
+                        @(course?.CreationDate.ToString() ?? "UNKNOWN")
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
