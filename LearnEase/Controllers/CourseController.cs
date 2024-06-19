@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using FluentValidation;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
@@ -45,13 +44,28 @@ public class CourseController : Controller
                 return base.View("CourseCreateMenu");
             }
 
-            await this.courseService.SetCourseLogo(newCourse, logo);
             await this.courseService.CreateCourseAsync(newCourse);
+            await this.courseService.SetCourseLogo(newCourse, logo);
             
             return base.RedirectToAction(actionName: "Index");
         }
         catch (Exception ex) {
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> Logo(int id) {
+        var courses = await courseService.GetAllCoursesAsync();
+        var course = courses.FirstOrDefault(c => c.Id == id);
+
+        if (course is null)
+            return BadRequest();
+
+        if (course.CourseLogoPath is null)
+            return Ok();
+
+        var fileStream = System.IO.File.Open(course.CourseLogoPath, FileMode.Open);
+        return base.File(fileStream, "image/jpeg");
     }
 }
