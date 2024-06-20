@@ -12,6 +12,16 @@ namespace LearnEase.Services
         {
             this.courseRepository = courseRepository;
         }
+
+        public async Task<Course> GetCourseById(int courseId)
+        {
+            var course = await courseRepository.GetByIdAsync(courseId);
+
+            if (course is null)
+                throw new ArgumentException($"Cannot find course by id: {courseId}.");
+
+            return course;
+        }
         
         public async Task<IEnumerable<Course>> GetAllCoursesAsync()
         {
@@ -40,6 +50,24 @@ namespace LearnEase.Services
 
             using var newFileStream = File.Create(course.CourseLogoPath);
             await logo.CopyToAsync(newFileStream);
+        }
+
+        public async Task DeleteCourseByIdAsync(int courseId)
+        {
+            var changesCount = await courseRepository.DeleteAsync(courseId);
+
+            if (changesCount == 0)
+                throw new Exception("Course delete didn't apply!");
+        }
+
+        public async Task DeleteCourseLogo(int courseId)
+        {
+            var course = await courseRepository.GetByIdAsync(courseId);
+
+            if (course is null || course.CourseLogoPath is null)
+                throw new ArgumentException($"Cannot delete course logo by course id: {courseId}.");
+
+            File.Delete(course.CourseLogoPath);
         }
     }
 }

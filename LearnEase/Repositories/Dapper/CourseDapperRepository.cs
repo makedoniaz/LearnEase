@@ -42,5 +42,15 @@ namespace LearnEase.Repositories.Dapper
 
             return affectedRowsCount;
         }
+
+        public Task<int> DeleteAsync(int entityId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Course?> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

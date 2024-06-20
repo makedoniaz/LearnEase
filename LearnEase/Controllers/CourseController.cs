@@ -54,6 +54,21 @@ public class CourseController : Controller
         }
     }
 
+    [HttpDelete("{courseId:int}")]
+    public async Task<IActionResult> Delete(int courseId) {
+        try
+        {
+            await this.courseService.DeleteCourseLogo(courseId);
+            await this.courseService.DeleteCourseByIdAsync(courseId);
+
+            return Ok();
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet("[action]/{id}")]
     public async Task<IActionResult> Logo(int id) {
         var courses = await courseService.GetAllCoursesAsync();

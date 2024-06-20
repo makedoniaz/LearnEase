@@ -71,7 +71,7 @@
         <div class="courses-list">
             @foreach (var course in courses)
             {
-                <div class="list-item round">
+                <div class="list-item round" id="@course.Id">
                     <div class="item-name">
                         <h3>@(course?.Name)</h3>
                     </div>
@@ -84,14 +84,40 @@
                     <div class="item-date mb-4">
                         @(course?.CreationDate.ToString() ?? "UNKNOWN")
                     </div>
-
-                    <div>
-                        <img src="Course/Logo/@course.Id" alt="error">
-                    </div>
+                    @course?.CourseLogoPath
+                    @if (course?.CourseLogoPath != null)
+                    {
+                        <div>
+                            <img src="Course/Logo/@course.Id" alt="logo">
+                        </div>
+                    }
 
                     <a href="/Feedback/@(course?.Id)" class="btn btn-secondary btn-dark active item-button px-4" role="button" aria-pressed="true">Feedbacks</a>
+
+                    <a href="#" onclick="DeleteCourseHandler(@course.Id)" class="text-danger">Delete</a>
                 </div>
             }
         </div>
     </div>
 </div>
+
+<script>
+    function DeleteCourseHandler(courseId) {
+        fetch('/Course/' + courseId, { method: 'DELETE' })
+            .then((response) => {
+                if (!response.ok)
+                    throw new Error(response.statusText)
+
+                DeleteFeedbackFromDOM(courseId)
+                console.log("Course was successfully deleted!")
+            })
+            .catch((err) => console.log(err.message));
+    }
+
+    function DeleteFeedbackFromDOM(courseId) {
+        var coursesList = document.querySelector('.courses-list')
+        var course = coursesList.querySelector('#' + CSS.escape(courseId))
+
+        course.remove()
+    }
+</script>
