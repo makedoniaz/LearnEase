@@ -2,7 +2,6 @@ using System.Reflection;
 using FluentValidation;
 using LearnEase.Data;
 using LearnEase.Middlewares;
-using LearnEase.Repositories.Dapper;
 using LearnEase.Repositories.EfCore;
 using LearnEase.Repositories.Interfaces;
 using LearnEase.Services;
@@ -17,6 +16,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<LearnEaseDbContext>(
     (optionsBuilder) => optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"))
 );
+
+builder.Services.AddScoped<IUserRepository, UserEfCoreRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<ILogRepository, LogEfCoreRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
