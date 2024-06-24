@@ -1,12 +1,13 @@
+using LearnEase.Dtos;
 using LearnEase.Models;
 
 namespace LearnEase.Services.Interfaces;
 
 public interface IUserService
 {
-    Task RegistrateUserAsync(User user);
+    Task CreateUserAsync(RegistrationDto registrationDto);
 
-    Task LoginUserAsync(User user);
+    Task<User> FindUserByCredentialsAsync(LoginDto userCredentials);
 
     Task ChangeUserInfoAsync(int userId, User user);
 }

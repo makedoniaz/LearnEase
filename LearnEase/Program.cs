@@ -6,12 +6,25 @@ using LearnEase.Repositories.EfCore;
 using LearnEase.Repositories.Interfaces;
 using LearnEase.Services;
 using LearnEase.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        //options.ExpireTimeSpan = TimeSpan.FromSeconds(60);
+        //options.Cookie.Name = "Test";
+        //options.ReturnUrlParameter = "elnur";
+        options.LoginPath = "/Identity/Login";
+        //options.AccessDeniedPath = "/api/Identity/Logout";
+        //options.AccessDeniedPath
+    }
+);
 
 builder.Services.AddDbContext<LearnEaseDbContext>(
     (optionsBuilder) => optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"))
@@ -47,7 +60,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseMiddleware<LogMiddleware>();
 
 app.MapControllerRoute(

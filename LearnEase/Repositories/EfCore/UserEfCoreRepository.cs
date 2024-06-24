@@ -1,4 +1,5 @@
 using LearnEase.Data;
+using LearnEase.Dtos;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +25,9 @@ public class UserEfCoreRepository : IUserRepository
         return await _context.Users.FirstOrDefaultAsync((u) => u.Id == id);
     }
 
-    public async Task<User?> FindByUsernameAsync(string username)
+    public async Task<User?> FindByCredentialsAsync(LoginDto credentials)
     {
-        return await _context.Users.FirstOrDefaultAsync((u) => u.Name == username);
+        return await _context.Users.FirstOrDefaultAsync((u) => u.Name == credentials.Login && u.Password == credentials.Password);
     }
 
     public async Task<int> PutAsync(int id, User user)

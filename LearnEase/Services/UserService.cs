@@ -1,8 +1,7 @@
-using System.Security.Claims;
+using LearnEase.Dtos;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
 using LearnEase.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace LearnEase.Services;
 
@@ -23,20 +22,25 @@ public class UserService : IUserService
             throw new Exception("Feedback change didn't apply!");
     }
 
-    public async Task LoginUserAsync(User user)
+    public async Task<User> FindUserByCredentialsAsync(LoginDto userCredentials)
     {
-        var foundUser = await userRepository.FindByUsernameAsync(user.Name);
+        var foundUser = await userRepository.FindByCredentialsAsync(userCredentials);
 
         if (foundUser is null)
-            throw new ArgumentException("User not found!");
+            throw new ArgumentException("Invalid credentials!");
 
-        if (user.Password != foundUser.Password)
-            throw new ArgumentException("Incorrect password!");
+        return foundUser;
     }
 
-    public async Task RegistrateUserAsync(User user)
+    public async Task CreateUserAsync(RegistrationDto registrationDto)
     {
-        var changesCount = await userRepository.CreateAsync(user);
+        var newUser = new User() {
+            Name = registrationDto.Name,
+            Email = registrationDto.Email,
+            Password = registrationDto.Password
+        };
+
+        var changesCount = await userRepository.CreateAsync(newUser);
 
         if (changesCount == 0)
             throw new Exception("User creation didn't apply!");
