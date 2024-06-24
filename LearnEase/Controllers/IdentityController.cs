@@ -50,11 +50,12 @@ public class IdentityController : Controller
         }
         catch
         {
+            return base.RedirectToRoute("LoginView", new
+            {
+                loginDto.ReturnUrl
+            });
 
         }
-
-
-        return Ok();
     }
 
     [Route("/[controller]/[action]", Name = "RegistrationView")]
@@ -70,13 +71,12 @@ public class IdentityController : Controller
         try
         {
             await userService.CreateUserAsync(registrationDto);
+            return base.RedirectToRoute("LoginView");
         }
         catch
         {
-           
+           return BadRequest();
         }
-
-        return base.RedirectToRoute("LoginView");
     }
 
     [HttpGet]

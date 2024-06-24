@@ -17,12 +17,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        //options.ExpireTimeSpan = TimeSpan.FromSeconds(60);
-        //options.Cookie.Name = "Test";
-        //options.ReturnUrlParameter = "elnur";
         options.LoginPath = "/Identity/Login";
-        //options.AccessDeniedPath = "/api/Identity/Logout";
-        //options.AccessDeniedPath
     }
 );
 
@@ -61,6 +56,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseAuthorization();
 app.UseMiddleware<LogMiddleware>();
 
 app.MapControllerRoute(
