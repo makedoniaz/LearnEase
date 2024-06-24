@@ -13,4 +13,8 @@ public class Course
     public DateTime CreationDate { get; set; }
 
     public string? CourseLogoPath { get; set; }
+
+    public User? User { get; set; }
+
+    public int? UserId { get; set; }
 }
