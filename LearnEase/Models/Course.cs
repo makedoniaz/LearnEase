@@ -8,7 +8,13 @@ public class Course
 
     public string Description { get; set; }
 
-    public int? AmountOfLectures { get; set; }
+    public int AmountOfLectures { get; set; }
 
-    public DateTime? CreationDate { get; set; }
+    public DateTime CreationDate { get; set; }
+
+    public string? CourseLogoPath { get; set; }
+
+    public long UserId { get; set; }
+
+    public User? User { get; set; }
 }
