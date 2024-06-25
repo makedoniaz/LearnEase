@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using FluentValidation;
 using LearnEase.Dtos;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -12,9 +13,15 @@ public class IdentityController : Controller
 {
     private readonly IUserService userService;
 
-    public IdentityController(IUserService userService)
+    private readonly IValidator<LoginDto> loginValidator;
+
+    private readonly IValidator<RegistrationDto> registrationValidator;
+
+    public IdentityController(IUserService userService, IValidator<LoginDto> loginValidator, IValidator<RegistrationDto> registrationValidator)
     {
         this.userService = userService;
+        this.loginValidator = loginValidator;
+        this.registrationValidator = registrationValidator;
     }
 
 
@@ -32,6 +39,18 @@ public class IdentityController : Controller
     {
         try 
         {
+            var validationResult = await loginValidator.ValidateAsync(loginDto);
+            
+            if (!validationResult.IsValid) {
+                foreach(var error in validationResult.Errors)
+                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+
+                return base.RedirectToRoute("LoginView", new
+                {
+                    loginDto.ReturnUrl
+                });
+            }
+
             var foundUser = await userService.FindUserByCredentialsAsync(loginDto);
 
             var claims = new Claim[] {
@@ -56,11 +75,12 @@ public class IdentityController : Controller
         }
         catch
         {
+            base.TempData["AuthenticationError"] = "Incorrect login or password!";
+
             return base.RedirectToRoute("LoginView", new
             {
                 loginDto.ReturnUrl
             });
-
         }
     }
 

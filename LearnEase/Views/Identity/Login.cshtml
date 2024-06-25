@@ -2,6 +2,10 @@
 
 @model LoginDto
 
+@{
+    var authenticationError = TempData["AuthenticationError"] as string;
+}
+
 <div>
     <form asp-route="LoginEndpoint" method="post">
         <div class="mb-3">
@@ -11,11 +15,17 @@
         <div class="mb-3">
             <label asp-for=Login class="form-label">Login</label>
             <input asp-for=Login type="text" class="form-control">
+            <span class="mt-2 d-block text-danger feedback-error" asp-validation-for="Login"></span>
         </div>
 
         <div class="mb-3">
             <label asp-for=Password class="form-label">Password</label>
             <input asp-for=Password type="password" class="form-control">
+            <span class="mt-2 d-block text-danger feedback-error" asp-validation-for="Password"></span>
+        </div>
+
+        <div>
+            <span class="mt-2 d-block text-danger feedback-error">@authenticationError</span>
         </div>
         
         <button type="submit" class="btn btn-primary">Login</button>
