@@ -1,8 +1,11 @@
 @using LearnEase.Models;
+@using System.Security.Claims;
+
 @model IEnumerable<Feedback>;
 
 @{
     var feedbacks = @Model;
+    var userRole = base.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
 }
 
 <style>
@@ -71,11 +74,12 @@
                         @(feedback.Rating ?? 0)/5
                     </div>
                 </div>
-
-                <div class="item-functionality">
-                    <a href="#" onclick="DeleteFeedbackHandler(@feedback.Id)" class="text-danger">Delete</a> 
-                    <a href="/Feedback/Edit/@feedback.Id" class="text-dark">Edit</a>
-                </div>
+                @if(userRole == "Admin") {
+                    <div class="item-functionality">
+                        <a href="#" onclick="DeleteFeedbackHandler(@feedback.Id)" class="text-danger">Delete</a> 
+                        <a href="/Feedback/Edit/@feedback.Id" class="text-dark">Edit</a>
+                    </div>
+                }
             </div>
         }
     </div>

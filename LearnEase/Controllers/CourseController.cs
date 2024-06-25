@@ -27,14 +27,14 @@ public class CourseController : Controller
     }
 
 
-    [Authorize]
+    [Authorize(Roles="User, Author, Admin")]
     [HttpGet("[action]", Name = "CourseCreateView")]
     public IActionResult Create() {
         return base.View("CourseCreateMenu");
     }
     
 
-    [Authorize]
+    [Authorize(Roles="User, Author, Admin")]
     [HttpPost(Name = "CourseCreateApi")]
     public async Task<IActionResult> Create([FromForm] Course newCourse, IFormFile? logo) {
         try {
@@ -56,7 +56,9 @@ public class CourseController : Controller
             return BadRequest(ex.Message);
         }
     }
+    
 
+    [Authorize(Roles="Admin")]
     [HttpDelete("{courseId:int}")]
     public async Task<IActionResult> Delete(int courseId) {
         try

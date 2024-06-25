@@ -34,13 +34,13 @@ public class FeedbackController : Controller
         }
     }
 
-    [Authorize]
+    [Authorize(Roles="User, Author, Admin")]
     [HttpGet("[action]", Name = "CreateFeedbackView")]
     public IActionResult Create() {
         return View("FeedbackCreateMenu");
     }
 
-    [Authorize]
+    [Authorize(Roles="User, Author, Admin")]
     [HttpPost(Name = "CreateFeedbackApi")]
     public async Task<IActionResult> Create(Feedback newFeedback) {
         try {
@@ -61,7 +61,7 @@ public class FeedbackController : Controller
         }
     }
 
-    [Authorize]
+    [Authorize(Roles="Admin")]
     [Route("Edit/{feedbackId:int}")]
     public async Task<IActionResult> GetFeedbackChangeMenu(int feedbackId) {
         var feedback = await feedbackService.GetFeedbackById(feedbackId);
@@ -69,7 +69,7 @@ public class FeedbackController : Controller
         return base.View("FeedbackChangeMenu", feedback);
     }
 
-    [Authorize]
+    [Authorize(Roles="Admin")]
     [HttpPut("{feedbackId:int}")]
     public async Task<IActionResult> Change(int feedbackId, [FromBody]Feedback feedback)
     {
@@ -93,7 +93,7 @@ public class FeedbackController : Controller
         }
     }
 
-    [Authorize]
+    [Authorize(Roles="Admin")]
     [HttpDelete("{feedbackId:int}")]
     public async Task<IActionResult> Delete(int feedbackId)
     {

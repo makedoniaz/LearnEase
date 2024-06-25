@@ -3,7 +3,7 @@
 
 @{
     var feedback = Model;
-    var userId = base.User.Claims.First(c => c.Type == "id").Value;
+    var userId = base.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
 }
 
 <style>

@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Security.Claims;
 using FluentValidation;
 using LearnEase.Data;
 using LearnEase.Middlewares;
@@ -17,6 +18,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
+        options.AccessDeniedPath = "/Home/Index";
         options.LoginPath = "/Identity/Login";
     }
 );
