@@ -4,6 +4,7 @@ using LearnEase.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Migrations
 {
     [DbContext(typeof(LearnEaseDbContext))]
-    partial class LearnEaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240625075745_AddUserIdFKToFeedbacks")]
+    partial class AddUserIdFKToFeedbacks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

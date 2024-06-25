@@ -13,12 +13,7 @@ namespace LearnEase.Data.Configurations
         public void Configure(EntityTypeBuilder<Feedback> builder) {
             builder
                 .HasKey(c => c.Id);
-
-            builder
-                .Property(c => c.Username)
-                .IsRequired()
-                .HasMaxLength(100);
-
+                
             builder
                 .Property(c => c.Text)
                 .IsRequired()

@@ -3,6 +3,7 @@
 
 @{
     var feedback = Model;
+    var userId = base.User.Claims.First(c => c.Type == "id").Value;
 }
 
 <style>
@@ -112,7 +113,7 @@
 
         return {
             Id: @feedback.Id,
-            Username: '@feedback.Username',
+            UserId: @userId,
             Text: feedbackText,
             Rating: feedbackRating,
             CourseId: @feedback.CourseId,

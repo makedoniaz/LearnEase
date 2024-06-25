@@ -1,5 +1,9 @@
 @model Feedback;
 
+@{
+    var userId = base.User.Claims.First(c => c.Type == "id").Value;
+}
+
 <style>
     .feedback-form {
         padding: 25px;
@@ -14,11 +18,7 @@
 
 <div>
     <form asp-route="CreateFeedbackApi" method="post" class="feedback-form">
-        <div class="form-group mb-4">
-            <label asp-for="Username" class="mb-3 h5">Username:</label>
-            <input asp-for="Username" class="form-control" placeholder="Your username" >
-            <span class="mt-2 d-block text-danger feedback-error" asp-validation-for="Username"></span>
-        </div>
+        <input type="hidden" asp-for="UserId" value="@userId">
 
         <div class="form-text mb-4">
             <label asp-for="Text" class="mb-3 h5 text-dark">Feedback:</label>

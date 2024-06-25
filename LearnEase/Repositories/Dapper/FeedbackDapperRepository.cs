@@ -49,10 +49,9 @@ namespace LearnEase.Repositories.Dapper
 
              var affectedRowsCount = await connection.ExecuteAsync(
                     sql: @"insert into Feedbacks
-                        (Username, Text, Rating, CourseId, CreationDate)
-                        values (@Username, @Text, @Rating, @CourseId, @CreationDate)",
+                        (Text, Rating, CourseId, CreationDate)
+                        values (@Text, @Rating, @CourseId, @CreationDate)",
                     param: new {
-                        feedback.Username,
                         feedback.Text,
                         feedback.Rating,
                         feedback.CourseId,
