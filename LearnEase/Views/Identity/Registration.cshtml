@@ -7,14 +7,17 @@
         <div class="mb-3">
             <label asp-for=Name class="form-label">Name</label>
             <input asp-for=Name type="text" class="form-control">
+            <span class="mt-2 d-block text-danger feedback-error" asp-validation-for="Name"></span>
         </div>
         <div class="mb-3">
             <label asp-for=Email class="form-label">Email address</label>
             <input asp-for=Email type="email" class="form-control">
+            <span class="mt-2 d-block text-danger feedback-error" asp-validation-for="Email"></span>
         </div>
         <div class="mb-3">
             <label asp-for=Password class="form-label">Password</label>
             <input asp-for=Password type="password" class="form-control">
+            <span class="mt-2 d-block text-danger feedback-error" asp-validation-for="Password"></span>
         </div>
         <button type="submit" class="btn btn-success">Registration</button>
     </form>

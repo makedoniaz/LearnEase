@@ -106,6 +106,15 @@ public class IdentityController : Controller
     {
         try
         {
+            var validationResult = await registrationValidator.ValidateAsync(registrationDto);
+            
+            if (!validationResult.IsValid) {
+                foreach(var error in validationResult.Errors)
+                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+
+                return base.View();
+            }
+
             var role = new Role() {
                 Name = "User"
             };
@@ -123,7 +132,7 @@ public class IdentityController : Controller
         }
         catch (Exception ex)
         {
-           return BadRequest();
+           return BadRequest(ex);
         }
     }
 
