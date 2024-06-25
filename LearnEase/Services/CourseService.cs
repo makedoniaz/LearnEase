@@ -65,7 +65,7 @@ namespace LearnEase.Services
             var course = await courseRepository.GetByIdAsync(courseId);
 
             if (course is null || course.CourseLogoPath is null)
-                throw new ArgumentException($"Cannot delete course logo by course id: {courseId}.");
+                return;
 
             File.Delete(course.CourseLogoPath);
         }

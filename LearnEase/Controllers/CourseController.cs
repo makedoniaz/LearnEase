@@ -1,6 +1,7 @@
 using FluentValidation;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Controllers;
@@ -26,12 +27,14 @@ public class CourseController : Controller
     }
 
 
+    [Authorize]
     [HttpGet("[action]", Name = "CourseCreateView")]
     public IActionResult Create() {
         return base.View("CourseCreateMenu");
     }
     
 
+    [Authorize]
     [HttpPost(Name = "CourseCreateApi")]
     public async Task<IActionResult> Create([FromForm] Course newCourse, IFormFile? logo) {
         try {

@@ -46,6 +46,12 @@ public class IdentityController : Controller
 
             await base.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
+            if (string.IsNullOrWhiteSpace(loginDto.ReturnUrl) == false)
+            {
+                return base.Redirect(loginDto.ReturnUrl);
+            }
+
+
             return base.RedirectToAction(controllerName: "Home", actionName: "Index");
         }
         catch
