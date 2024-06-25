@@ -18,6 +18,9 @@ namespace LearnEase.Data.Configurations
                 .Property(c => c.Text)
                 .IsRequired()
                 .HasMaxLength(500);
+
+            builder
+                .Ignore(c => c.Username);
         }
     }
 }

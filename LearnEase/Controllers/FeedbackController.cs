@@ -1,6 +1,7 @@
 using FluentValidation;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Controllers;
@@ -33,11 +34,13 @@ public class FeedbackController : Controller
         }
     }
 
+    [Authorize]
     [HttpGet("[action]", Name = "CreateFeedbackView")]
     public IActionResult Create() {
         return View("FeedbackCreateMenu");
     }
 
+    [Authorize]
     [HttpPost(Name = "CreateFeedbackApi")]
     public async Task<IActionResult> Create(Feedback newFeedback) {
         try {
@@ -58,6 +61,7 @@ public class FeedbackController : Controller
         }
     }
 
+    [Authorize]
     [Route("Edit/{feedbackId:int}")]
     public async Task<IActionResult> GetFeedbackChangeMenu(int feedbackId) {
         var feedback = await feedbackService.GetFeedbackById(feedbackId);
@@ -65,6 +69,7 @@ public class FeedbackController : Controller
         return base.View("FeedbackChangeMenu", feedback);
     }
 
+    [Authorize]
     [HttpPut("{feedbackId:int}")]
     public async Task<IActionResult> Change(int feedbackId, [FromBody]Feedback feedback)
     {
@@ -88,6 +93,7 @@ public class FeedbackController : Controller
         }
     }
 
+    [Authorize]
     [HttpDelete("{feedbackId:int}")]
     public async Task<IActionResult> Delete(int feedbackId)
     {
