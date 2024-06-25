@@ -13,7 +13,7 @@ namespace LearnEase.Services
             this.courseRepository = courseRepository;
         }
 
-        public async Task<Course> GetCourseById(int courseId)
+        public async Task<Course> GetCourseByIdAsync(int courseId)
         {
             var course = await courseRepository.GetByIdAsync(courseId);
 

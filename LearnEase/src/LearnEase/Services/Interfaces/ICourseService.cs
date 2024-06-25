@@ -4,7 +4,7 @@ namespace LearnEase.Services.Interfaces
 {
     public interface ICourseService
     {
-        Task<Course> GetCourseById(int courseId);
+        Task<Course> GetCourseByIdAsync(int courseId);
 
         Task<IEnumerable<Course>> GetAllCoursesAsync();
 
