@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using FluentValidation;
 using LearnEase.Dtos;
+using LearnEase.Models;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -13,15 +14,19 @@ public class IdentityController : Controller
 {
     private readonly IUserService userService;
 
+    private readonly IRoleService roleService;
+
     private readonly IValidator<LoginDto> loginValidator;
 
     private readonly IValidator<RegistrationDto> registrationValidator;
 
-    public IdentityController(IUserService userService, IValidator<LoginDto> loginValidator, IValidator<RegistrationDto> registrationValidator)
+    public IdentityController(IUserService userService, IValidator<LoginDto> loginValidator, 
+        IValidator<RegistrationDto> registrationValidator, IRoleService roleService)
     {
         this.userService = userService;
         this.loginValidator = loginValidator;
         this.registrationValidator = registrationValidator;
+        this.roleService = roleService;
     }
 
 
@@ -53,12 +58,17 @@ public class IdentityController : Controller
 
             var foundUser = await userService.FindUserByCredentialsAsync(loginDto);
 
-            var claims = new Claim[] {
+            var claims = new List<Claim> {
                 new("id", foundUser.Id.ToString()),
                 new(ClaimTypes.Name, foundUser.Name),
                 new(ClaimTypes.Email, foundUser.Email),
-                new(ClaimTypes.Role, "test"),
             };
+
+            var roles = await roleService.GetUserRolesByUserIdAsync((int)foundUser.Id);
+
+            foreach(var role in roles)
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
+
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -96,10 +106,22 @@ public class IdentityController : Controller
     {
         try
         {
+            var role = new Role() {
+                Name = "User"
+            };
+
             await userService.CreateUserAsync(registrationDto);
+            var registratedUser = await userService.FindUserByCredentialsAsync(new LoginDto() 
+                { 
+                    Login = registrationDto.Name, 
+                    Password = registrationDto.Password
+                }
+            );
+
+            await roleService.AddRoleToUserById(role, (int)registratedUser.Id);
             return base.RedirectToRoute("LoginView");
         }
-        catch
+        catch (Exception ex)
         {
            return BadRequest();
         }

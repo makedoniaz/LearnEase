@@ -28,6 +28,9 @@ builder.Services.AddDbContext<LearnEaseDbContext>(
 builder.Services.AddScoped<IUserRepository, UserEfCoreRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IRoleRepository, RoleEfCoreRepository>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
 builder.Services.AddScoped<ILogRepository, LogEfCoreRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<LogMiddleware>();
