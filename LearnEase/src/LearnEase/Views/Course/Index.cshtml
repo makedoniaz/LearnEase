@@ -75,25 +75,30 @@
             @foreach (var course in courses)
             {
                 <div class="list-item round" id="@course.Id">
-                    <div class="item-name">
-                        <h3>@(course?.Name)</h3>
-                    </div>
-                    <div class="item-desc">
-                        @(course?.Description)
-                    </div>
-                    <div class="item-lect-amount">
-                        Amount of lectures: @(course?.AmountOfLectures ?? 0)
-                    </div>
-                    <div class="item-date mb-4">
-                        @(course?.CreationDate.ToString() ?? "UNKNOWN")
-                    </div>
-                    @course?.CourseLogoPath
-                    @if (course?.CourseLogoPath != null)
-                    {
-                        <div>
-                            <img src="Course/Logo/@course.Id" alt="logo">
+                    <div class="d-flex justify-content-between">
+                        <div class="info-div">
+                            <div class="item-name">
+                                <h3>@(course?.Name)</h3>
+                            </div>
+                            <div class="item-desc">
+                                @(course?.Description)
+                            </div>
+                            <div class="item-lect-amount">
+                                Amount of lectures: @(course?.AmountOfLectures ?? 0)
+                            </div>
+                            <div class="item-date mb-4">
+                                @(course?.CreationDate.ToString() ?? "UNKNOWN")
+                            </div>
                         </div>
-                    }
+                        <div class="image-div">
+                            @if (course?.CourseLogoPath != null)
+                            {   
+                                <div>
+                                    <img width="150" height="150" src="Course/Logo/@course.Id" alt="logo">
+                                </div>
+                            }
+                        </div>
+                    </div>
 
                     <a href="/Feedback/@(course?.Id)" class="btn btn-secondary btn-dark active item-button px-4" role="button" aria-pressed="true">Feedbacks</a>
                     @if(userRole == "Admin") {
