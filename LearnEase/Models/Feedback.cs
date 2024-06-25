@@ -13,9 +13,5 @@ namespace LearnEase.Models
         public int CourseId { get; set; }
 
         public DateTime CreationDate { get; set; }
-        
-        public User? User { get; set; }
-
-        public int? UserId { get; set; }
     }
 }

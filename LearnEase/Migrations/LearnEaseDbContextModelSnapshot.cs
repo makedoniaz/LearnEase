@@ -49,17 +49,9 @@ namespace LearnEase.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("UserId1")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("LearnEase.Models.Feedback", b =>
@@ -84,12 +76,6 @@ namespace LearnEase.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("UserId1")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -97,9 +83,7 @@ namespace LearnEase.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("Feedbacks");
+                    b.ToTable("Feedbacks", (string)null);
                 });
 
             modelBuilder.Entity("LearnEase.Models.Log", b =>
@@ -135,7 +119,7 @@ namespace LearnEase.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("LearnEase.Models.User", b =>
@@ -166,27 +150,7 @@ namespace LearnEase.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("LearnEase.Models.Course", b =>
-                {
-                    b.HasOne("LearnEase.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("LearnEase.Models.Feedback", b =>
-                {
-                    b.HasOne("LearnEase.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }
