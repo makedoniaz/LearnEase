@@ -33,6 +33,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleRepository, RoleEfCoreRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
+builder.Services.AddScoped<IUserRoleRepository, UserRoleEfCoreRepository>();
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+
 builder.Services.AddScoped<ILogRepository, LogEfCoreRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<LogMiddleware>();

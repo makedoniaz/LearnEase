@@ -46,4 +46,9 @@ public class UserEfCoreRepository : IUserRepository
 
             return changedObjectsCount;
     }
+
+    public async Task<bool> IsNotEmptyAsync()
+    {
+        return await _context.Users.AnyAsync();
+    }
 }

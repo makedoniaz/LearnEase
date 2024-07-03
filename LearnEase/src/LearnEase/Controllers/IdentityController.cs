@@ -2,6 +2,7 @@ using System.Security.Claims;
 using FluentValidation;
 using LearnEase.Dtos;
 using LearnEase.Models;
+using LearnEase.Services;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,19 +15,19 @@ public class IdentityController : Controller
 {
     private readonly IUserService userService;
 
-    private readonly IRoleService roleService;
+    private readonly IUserRoleService userRoleService;
 
     private readonly IValidator<LoginDto> loginValidator;
 
     private readonly IValidator<RegistrationDto> registrationValidator;
 
     public IdentityController(IUserService userService, IValidator<LoginDto> loginValidator, 
-        IValidator<RegistrationDto> registrationValidator, IRoleService roleService)
+        IValidator<RegistrationDto> registrationValidator, IUserRoleService userRoleService)
     {
         this.userService = userService;
         this.loginValidator = loginValidator;
         this.registrationValidator = registrationValidator;
-        this.roleService = roleService;
+        this.userRoleService = userRoleService;
     }
 
 
@@ -64,7 +65,7 @@ public class IdentityController : Controller
                 new(ClaimTypes.Email, foundUser.Email),
             };
 
-            var roles = await roleService.GetUserRolesByUserIdAsync((int)foundUser.Id);
+            var roles = await userRoleService.GetUserRolesByUserId(foundUser.Id);
 
             foreach(var role in roles)
                 claims.Add(new Claim(ClaimTypes.Role, role.Name));
@@ -114,10 +115,8 @@ public class IdentityController : Controller
 
                 return base.View();
             }
-
-            var role = new Role() {
-                Name = "User"
-            };
+            
+            var registerAsAdmin = !await userService.HasAnyUsersRegistered();
 
             await userService.CreateUserAsync(registrationDto);
             var registratedUser = await userService.FindUserByCredentialsAsync(new LoginDto() 
@@ -127,12 +126,17 @@ public class IdentityController : Controller
                 }
             );
 
-            await roleService.AddRoleToUserById(role, (int)registratedUser.Id);
+            if (registerAsAdmin)
+                await userRoleService.SetUserRoleAsync(registratedUser.Id, "Admin");
+
+            else
+                await userRoleService.SetDefaultUserRoleAsync(registratedUser.Id);
+
             return base.RedirectToRoute("LoginView");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-           return BadRequest(ex);
+           return base.View();
         }
     }
 

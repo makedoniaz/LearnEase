@@ -31,5 +31,10 @@ namespace LearnEase.Repositories.EfCore
 
             return changedObjectsCount;
         }
+
+        public Task<IEnumerable<Role>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

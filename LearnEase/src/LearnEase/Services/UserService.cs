@@ -7,7 +7,7 @@ namespace LearnEase.Services;
 
 public class UserService : IUserService
 {
-     private readonly IUserRepository userRepository;
+    private readonly IUserRepository userRepository;
 
     public UserService(IUserRepository userRepository)
     {
@@ -44,5 +44,10 @@ public class UserService : IUserService
 
         if (changesCount == 0)
             throw new Exception("User creation didn't apply!");
+    }
+
+    public async Task<bool> HasAnyUsersRegistered()
+    {
+        return await userRepository.IsNotEmptyAsync();
     }
 }

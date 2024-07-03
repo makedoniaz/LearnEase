@@ -7,32 +7,19 @@ namespace LearnEase.Services
     public class RoleService : IRoleService
     {
         private readonly IRoleRepository roleRepository;
-
-        private readonly IUserRepository userRepository;
         
-        public RoleService(IRoleRepository roleRepository, IUserRepository userRepository) {
+        public RoleService(IRoleRepository roleRepository) {
             this.roleRepository = roleRepository;
-            this.userRepository = userRepository;
         }
 
-        public async Task AddRoleToUserById(Role role, int userId)
+        public async Task<Role> GetRoleByRoleNameAsync(string roleName)
         {
-            var roleToAdd = await roleRepository.GetRoleByNameAsync(role.Name);
+            var role = await roleRepository.GetRoleByNameAsync(roleName);
 
-            if (roleToAdd is null)
-                throw new Exception("This role doesn't exist!");
+            if (role is null)
+                throw new ArgumentException("Role doesn't exist");
 
-            var user = await userRepository.GetByIdAsync(userId);
-
-            if (user is null)
-                throw new Exception("User not found!");
-
-            var userRole = new UserRole() {
-                UserId = user.Id,
-                RoleId = roleToAdd.Id
-            };
-
-            await roleRepository.AddUserRoleAsync(userRole);
+            return role;
         }
 
         public async Task<IEnumerable<Role>> GetUserRolesByUserIdAsync(int userId)

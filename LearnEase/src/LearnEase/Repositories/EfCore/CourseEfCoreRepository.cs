@@ -35,7 +35,7 @@ namespace LearnEase.Repositories.EfCore
         }
 
         public async Task<int> DeleteAsync(int id) {
-            var courseToDelete = _context.Courses.FirstOrDefault(f => f.Id == id);
+            var courseToDelete = _context.Courses.FirstOrDefault(c => c.Id == id);
 
             if (courseToDelete is null)
                 return 0;

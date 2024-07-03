@@ -10,4 +10,6 @@ public interface IUserService
     Task<User> FindUserByCredentialsAsync(LoginDto userCredentials);
 
     Task ChangeUserInfoAsync(int userId, User user);
+
+    Task<bool> HasAnyUsersRegistered();
 }

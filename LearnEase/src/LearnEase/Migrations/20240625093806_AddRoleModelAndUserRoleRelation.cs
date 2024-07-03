@@ -58,6 +58,11 @@ namespace LearnEase.Migrations
                 name: "IX_UserRoles_UserId",
                 table: "UserRoles",
                 column: "UserId");
+
+            migrationBuilder.Sql(
+                sql: @"insert into Roles
+                    values ('Admin'), ('Author'), ('User')"
+            );
         }
 
         /// <inheritdoc />
@@ -68,6 +73,11 @@ namespace LearnEase.Migrations
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.Sql(
+                sql: @"delete from Roles
+                        where [Name] = 'Admin' or [Name] = 'Author' or [Name] = 'User'"
+            );
         }
     }
 }
