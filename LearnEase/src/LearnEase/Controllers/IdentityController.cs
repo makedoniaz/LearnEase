@@ -1,8 +1,6 @@
 using System.Security.Claims;
 using FluentValidation;
 using LearnEase.Dtos;
-using LearnEase.Models;
-using LearnEase.Services;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
