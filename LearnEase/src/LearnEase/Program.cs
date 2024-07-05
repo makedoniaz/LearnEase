@@ -1,13 +1,14 @@
 using System.Reflection;
-using System.Security.Claims;
 using FluentValidation;
 using LearnEase.Data;
 using LearnEase.Middlewares;
+using LearnEase.Models;
 using LearnEase.Repositories.EfCore;
 using LearnEase.Repositories.Interfaces;
 using LearnEase.Services;
 using LearnEase.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,26 +16,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.AccessDeniedPath = "/Home/Index";
-        options.LoginPath = "/Identity/Login";
-    }
-);
-
 builder.Services.AddDbContext<LearnEaseDbContext>(
     (optionsBuilder) => optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"))
 );
 
-builder.Services.AddScoped<IUserRepository, UserEfCoreRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-
-builder.Services.AddScoped<IRoleRepository, RoleEfCoreRepository>();
-builder.Services.AddScoped<IRoleService, RoleService>();
-
-builder.Services.AddScoped<IUserRoleRepository, UserRoleEfCoreRepository>();
-builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+builder.Services.AddIdentity<User, IdentityRole>(options => {
+    //options.Password.RequireDigit = true;
+}).AddEntityFrameworkStores<LearnEaseDbContext>();
 
 builder.Services.AddScoped<ILogRepository, LogEfCoreRepository>();
 builder.Services.AddScoped<ILogService, LogService>();

@@ -13,9 +13,5 @@ namespace LearnEase.Models
         public DateTime CreationDate { get; set; }
 
         public string? Username { get; set; }
-
-        public long UserId { get; set; }
-
-        public User? User { get; set; }
     }
 }

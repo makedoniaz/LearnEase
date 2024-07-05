@@ -11,21 +11,14 @@ namespace LearnEase.Controllers;
 [Route("[controller]")]
 public class IdentityController : Controller
 {
-    private readonly IUserService userService;
-
-    private readonly IUserRoleService userRoleService;
-
     private readonly IValidator<LoginDto> loginValidator;
 
     private readonly IValidator<RegistrationDto> registrationValidator;
 
-    public IdentityController(IUserService userService, IValidator<LoginDto> loginValidator, 
-        IValidator<RegistrationDto> registrationValidator, IUserRoleService userRoleService)
+    public IdentityController(IValidator<LoginDto> loginValidator, IValidator<RegistrationDto> registrationValidator)
     {
-        this.userService = userService;
         this.loginValidator = loginValidator;
         this.registrationValidator = registrationValidator;
-        this.userRoleService = userRoleService;
     }
 
 
@@ -55,29 +48,7 @@ public class IdentityController : Controller
                 });
             }
 
-            var foundUser = await userService.FindUserByCredentialsAsync(loginDto);
-
-            var claims = new List<Claim> {
-                new("id", foundUser.Id.ToString()),
-                new(ClaimTypes.Name, foundUser.Name),
-                new(ClaimTypes.Email, foundUser.Email),
-            };
-
-            var roles = await userRoleService.GetUserRolesByUserId(foundUser.Id);
-
-            foreach(var role in roles)
-                claims.Add(new Claim(ClaimTypes.Role, role.Name));
-
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            await base.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
-
-            if (string.IsNullOrWhiteSpace(loginDto.ReturnUrl) == false)
-            {
-                return base.Redirect(loginDto.ReturnUrl);
-            }
+            
 
 
             return base.RedirectToAction(controllerName: "Home", actionName: "Index");
@@ -113,22 +84,6 @@ public class IdentityController : Controller
 
                 return base.View();
             }
-            
-            var registerAsAdmin = !await userService.HasAnyUsersRegistered();
-
-            await userService.CreateUserAsync(registrationDto);
-            var registratedUser = await userService.FindUserByCredentialsAsync(new LoginDto() 
-                { 
-                    Login = registrationDto.Name, 
-                    Password = registrationDto.Password
-                }
-            );
-
-            if (registerAsAdmin)
-                await userRoleService.SetUserRoleAsync(registratedUser.Id, "Admin");
-
-            else
-                await userRoleService.SetDefaultUserRoleAsync(registratedUser.Id);
 
             return base.RedirectToRoute("LoginView");
         }

@@ -7,11 +7,9 @@ namespace LearnEase.Services
     public class FeedbackService : IFeedbackService
     {
         private readonly IFeedbackRepository feedbackRepository;
-        private readonly IUserRepository userRepository;
 
-        public FeedbackService(IFeedbackRepository feedbackRepository, IUserRepository userRepository) {
+        public FeedbackService(IFeedbackRepository feedbackRepository) {
             this.feedbackRepository = feedbackRepository;
-            this.userRepository = userRepository;
         }
 
         public async Task<Feedback> GetFeedbackById(int id)
@@ -56,8 +54,7 @@ namespace LearnEase.Services
             var feedbacks = await feedbackRepository.GetAllByCourseIdAsync(courseId);
 
             foreach(var feedback in feedbacks) {
-                var feedbackAuthor = await userRepository.GetByIdAsync((int)feedback.UserId);
-                feedback.Username = feedbackAuthor?.Name;
+                feedback.Username = "TEST";
             }
 
             return feedbacks;

@@ -1,14 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace LearnEase.Models;
 
-public class User
+public class User : IdentityUser
 {
-    public long Id { get; set; }
+    public bool IsMuted { get; set; }
 
-    public string Name { get; set; }
-
-    public string Email { get; set; }
-
-    public string Password { get; set; }
+    public bool IsActive { get; set; }
 
     public string? AvatarPath { get; set; }
 }
