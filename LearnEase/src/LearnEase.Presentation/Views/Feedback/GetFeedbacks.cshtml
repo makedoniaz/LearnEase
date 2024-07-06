@@ -1,0 +1,107 @@
+@using System.Security.Claims;
+
+@model IEnumerable<Feedback>;
+
+@{
+    var feedbacks = @Model;
+    var userRole = base.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+}
+
+<style>
+    .feedback-form {
+        padding: 25px;
+        border: 1px solid #d3d3d3;
+        border-radius: 15px;
+    }
+
+    .list-item {
+        border: 1px solid #d3d3d3;
+        border-radius: 15px;
+        padding: 30px;
+    }
+
+    .item-text-info  {
+        font-size: 19px;
+        overflow: hidden;
+    }
+
+    .item-date {
+        font-size: 16px;
+        color: #303030;
+    }
+
+    .item-rating-info {
+        font-size: 26px;
+    }
+
+    .item-functionality {
+        font-size: 17px;
+    }
+
+    .page-functionality {
+        font-size: 18px;
+    }
+</style>
+
+<div class="feedbacks-page">
+    <div class="page-functionality">
+        <a class="btn btn-dark px-3 btn-lg" asp-route="CreateFeedbackView">Create Feedback</a>
+    </div>
+
+    <hr>
+
+    <div class="feedbacks-list mb-5">
+        @foreach (var feedback in feedbacks)
+        {
+            <div class="list-item mb-4" id="@feedback.Id" >
+                <div class="info-wrapper d-flex justify-content-between align-items-center">
+                    <div class="item-text-info">
+                        <div class="item-username h4 mb-3">
+                            @feedback.Username
+                        </div>
+
+                        <div class="item-text mb-4">
+                            @(feedback.Text)
+                        </div>
+
+                        <div class="item-date mb-2">
+                            @(feedback.CreationDate)
+                        </div>
+                    </div>
+
+                    <div class="item-rating-info">
+                        @(feedback.Rating ?? 0)/5
+                    </div>
+                </div>
+                @if(userRole == "Admin") {
+                    <div class="item-functionality">
+                        <a href="#" onclick="DeleteFeedbackHandler(@feedback.Id)" class="text-danger">Delete</a> 
+                        <a href="/Feedback/Edit/@feedback.Id" class="text-dark">Edit</a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+
+<script> 
+    function DeleteFeedbackHandler(feedbackId) {
+        fetch('/Feedback/' + feedbackId, { method: 'DELETE' })
+            .then((response) => {
+                if (!response.ok)
+                    throw new Error(response.statusText)
+
+                DeleteFeedbackFromDOM(feedbackId)
+                console.log("Feedback was successfully deleted!")
+            })
+            .catch((err) => console.log(err.message));
+    }
+
+    function DeleteFeedbackFromDOM(feedbackId) {
+        var feedbacksList = document.querySelector('.feedbacks-list')
+        var feedback = feedbacksList.querySelector('#' + CSS.escape(feedbackId))
+
+        feedback.remove()
+    }
+</script>

@@ -1,7 +1,8 @@
+using LearnEase.Core.Models;
+using LearnEase.Core.Repositories;
+using LearnEase.Infrastructure.Services;
 using Moq;
-using LearnEase.Repositories.Interfaces;
-using LearnEase.Models;
-using LearnEase.Services;
+
 
 namespace UnitTests.Services
 {
@@ -14,7 +15,8 @@ namespace UnitTests.Services
 
             courseRepositoryMock.Setup((repo) => repo.GetByIdAsync(0))
                 .ReturnsAsync(new Course() {
-                    Name = "test"
+                    Name = "test",
+                    Description = "test"
                 });
 
             var courseService = new CourseService(courseRepository: courseRepositoryMock.Object);
