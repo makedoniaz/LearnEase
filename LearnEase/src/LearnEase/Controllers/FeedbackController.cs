@@ -1,6 +1,7 @@
 using FluentValidation;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
+using LearnEase.Utilities.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,12 +47,15 @@ public class FeedbackController : Controller
         try {
             var validationResult = await validator.ValidateAsync(newFeedback);
 
-            if (!validationResult.IsValid) {
-                foreach(var error in validationResult.Errors)
-                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                
-                return base.View("FeedbackCreateMenu");
-            }
+            var errorHandlerResult = this.HandleValidationErrors(
+                validationResult, 
+                returnLogic: () => base.View("FeedbackCreateMenu"),
+                pageKey: "FeedbackCreatePage"
+            );
+            
+            if (errorHandlerResult != null)
+                return errorHandlerResult;
+
 
             await this.feedbackService.CreateFeedbackAsync(newFeedback, (int)TempData["courseId"]);
             return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = TempData["courseId"] });
@@ -77,12 +81,15 @@ public class FeedbackController : Controller
         {
             var validationResult = await validator.ValidateAsync(feedback);
 
-            if (!validationResult.IsValid) {
-                foreach(var error in validationResult.Errors)
-                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                
-                return BadRequest(base.ModelState);
-            }
+            var errorHandlerResult = this.HandleValidationErrors(
+                validationResult, 
+                returnLogic: () => base.View("FeedbackChangeMenu"),
+                pageKey: "FeedbackChangePage"
+            );
+            
+            if (errorHandlerResult != null)
+                return errorHandlerResult;
+
 
             await this.feedbackService.PutFeedbackAsync(feedbackId, feedback);
             return Ok();

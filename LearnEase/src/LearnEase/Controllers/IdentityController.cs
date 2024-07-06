@@ -1,7 +1,9 @@
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using FluentValidation;
 using LearnEase.Dtos;
 using LearnEase.Services.Interfaces;
+using LearnEase.Utilities.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +27,9 @@ public class IdentityController : Controller
     [Route("/[controller]/[action]", Name = "LoginView")]
     public IActionResult Login(string? ReturnUrl)
     {
+        this.RestoreValidationErrors("LoginPage");
         ViewBag.ReturnUrl = ReturnUrl;
+
         return base.View();
     }
 
@@ -37,18 +41,15 @@ public class IdentityController : Controller
         try 
         {
             var validationResult = await loginValidator.ValidateAsync(loginDto);
-            
-            if (!validationResult.IsValid) {
-                foreach(var error in validationResult.Errors)
-                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
 
-                return base.RedirectToRoute("LoginView", new
-                {
-                    loginDto.ReturnUrl
-                });
-            }
-
+            var errorHandlerResult = this.HandleValidationErrors(
+                validationResult, 
+                returnLogic: () => base.RedirectToRoute("LoginView", new { loginDto.ReturnUrl }),
+                pageKey: "LoginPage"
+            );
             
+            if (errorHandlerResult != null)
+                return errorHandlerResult;
 
 
             return base.RedirectToAction(controllerName: "Home", actionName: "Index");
@@ -78,12 +79,14 @@ public class IdentityController : Controller
         {
             var validationResult = await registrationValidator.ValidateAsync(registrationDto);
             
-            if (!validationResult.IsValid) {
-                foreach(var error in validationResult.Errors)
-                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            var errorHandlerResult = this.HandleValidationErrors(
+                validationResult, 
+                returnLogic: () => base.View(),
+                pageKey: "RegisterPage"
+            );
 
-                return base.View();
-            }
+            if (errorHandlerResult != null)
+                return errorHandlerResult;
 
             return base.RedirectToRoute("LoginView");
         }

@@ -1,6 +1,7 @@
 using FluentValidation;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
+using LearnEase.Utilities.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,12 +41,15 @@ public class CourseController : Controller
         try {
             var validationResult = await validator.ValidateAsync(newCourse);
 
-            if (!validationResult.IsValid) {
-                foreach(var error in validationResult.Errors)
-                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            var errorHandlerResult = this.HandleValidationErrors(
+                validationResult, 
+                returnLogic: () => base.View("CourseCreateMenu"),
+                pageKey: "CourseCreatePage"
+            );
+            
+            if (errorHandlerResult != null)
+                return errorHandlerResult;
                 
-                return base.View("CourseCreateMenu");
-            }
 
             await this.courseService.CreateCourseAsync(newCourse);
             await this.courseService.SetCourseLogo(newCourse, logo);
