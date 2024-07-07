@@ -1,7 +1,9 @@
 @model Feedback;
 
+@using System.Security.Claims;
 @{
-    var userId = base.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var courseId = (int)TempData["courseId"];
 }
 
 <style>
@@ -18,7 +20,9 @@
 
 <div>
     <form asp-route="CreateFeedbackApi" method="post" class="feedback-form">
-        @* <input type="hidden" asp-for="UserId" value="@userId"> *@
+        <input type="hidden" asp-for="UserId" value="@userId">
+
+        <input type="hidden" asp-for="CourseId" value="@courseId">
 
         <div class="form-text mb-4">
             <label asp-for="Text" class="mb-3 h5 text-dark">Feedback:</label>

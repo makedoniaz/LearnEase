@@ -1,8 +1,10 @@
-@model Feedback
+@model Feedback;
+
+@using System.Security.Claims;
 
 @{
     var feedback = Model;
-    var userId = base.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 <style>
@@ -78,6 +80,7 @@
     })
 
     function PutFeedbackHandler() {
+        console.log('TEST')
         var feedback = GetFeedbackFromForm()
 
         if (feedback === null)
@@ -112,7 +115,7 @@
 
         return {
             Id: @feedback.Id,
-            UserId: @userId,
+            UserId: '@userId',
             Text: feedbackText,
             Rating: feedbackRating,
             CourseId: @feedback.CourseId,

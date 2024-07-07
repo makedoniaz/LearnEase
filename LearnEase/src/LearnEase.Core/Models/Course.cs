@@ -1,3 +1,5 @@
+#pragma warning disable CS8618
+
 namespace LearnEase.Core.Models;
 
 public class Course
@@ -13,4 +15,8 @@ public class Course
     public DateTime CreationDate { get; set; }
 
     public string? CourseLogoPath { get; set; }
+
+    public string? UserId { get; set; }
+    
+    public User User { get; set; }
 }

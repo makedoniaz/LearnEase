@@ -1,5 +1,8 @@
-@model RegistrationDto
+@model RegistrationDto;
 
+@{
+    var registrationErrors = TempData["RegistrationErrors"] as string;
+}
 
 <div>
     <form asp-route="RegistrationEndpoint" method="post">
@@ -18,6 +21,8 @@
             <input asp-for=Password type="password" class="form-control">
             <span class="mt-2 d-block text-danger feedback-error" asp-validation-for="Password"></span>
         </div>
+        <div>@registrationErrors</div>
+
         <button type="submit" class="btn btn-success">Registration</button>
     </form>
 </div>

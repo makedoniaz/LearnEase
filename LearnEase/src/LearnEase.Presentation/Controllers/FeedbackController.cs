@@ -45,7 +45,7 @@ public class FeedbackController : Controller
 
     [Authorize(Roles="User, Author, Admin")]
     [HttpPost(Name = "CreateFeedbackApi")]
-    public async Task<IActionResult> Create(Feedback newFeedback) {
+    public async Task<IActionResult> Create([FromForm] Feedback newFeedback) {
         try {
             var validationResult = await validator.ValidateAsync(newFeedback);
 
@@ -59,8 +59,8 @@ public class FeedbackController : Controller
                 return errorHandlerResult;
 
 
-            await this.feedbackService.CreateFeedbackAsync(newFeedback, (int)TempData["courseId"]);
-            return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = TempData["courseId"] });
+            await this.feedbackService.CreateFeedbackAsync(newFeedback);
+            return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = newFeedback.CourseId });
         }
         catch (Exception ex) {
             return BadRequest(ex.Message);
@@ -77,7 +77,7 @@ public class FeedbackController : Controller
 
     [Authorize(Roles="Admin")]
     [HttpPut("{feedbackId:int}")]
-    public async Task<IActionResult> Change(int feedbackId, [FromBody]Feedback feedback)
+    public async Task<IActionResult> Change(int feedbackId, [FromBody] Feedback feedback)
     {
         try
         {

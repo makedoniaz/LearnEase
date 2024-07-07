@@ -1,6 +1,7 @@
 using LearnEase.Core.Models;
 using LearnEase.Core.Repositories;
 using LearnEase.Core.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace LearnEase.Infrastructure.Services;
 
@@ -8,8 +9,11 @@ public class FeedbackService : IFeedbackService
 {
     private readonly IFeedbackRepository feedbackRepository;
 
-    public FeedbackService(IFeedbackRepository feedbackRepository) {
+    private readonly UserManager<User> userManager;
+
+    public FeedbackService(IFeedbackRepository feedbackRepository, UserManager<User> userManager) {
         this.feedbackRepository = feedbackRepository;
+        this.userManager = userManager;
     }
 
     public async Task<Feedback> GetFeedbackById(int id)
@@ -30,10 +34,14 @@ public class FeedbackService : IFeedbackService
             throw new Exception("Feedback change didn't apply!");
     }
 
-    public async Task CreateFeedbackAsync(Feedback feedback, int courseId)
+    public async Task CreateFeedbackAsync(Feedback feedback)
     {
+        if (feedback.UserId is not null) {
+            var user = await userManager.FindByIdAsync(feedback.UserId);
+            feedback.Username = user?.UserName;
+        }
+
         feedback.CreationDate = DateTime.Now;
-        feedback.CourseId = courseId;
 
         var changesCount = await feedbackRepository.CreateAsync(feedback);
 
@@ -53,9 +61,9 @@ public class FeedbackService : IFeedbackService
     {
         var feedbacks = await feedbackRepository.GetAllByCourseIdAsync(courseId);
 
-        foreach(var feedback in feedbacks) {
-            feedback.Username = "TEST";
-        }
+        // foreach(var feedback in feedbacks) {
+        //     feedback.Username = "TEST";
+        // }
 
         return feedbacks;
     }

@@ -1,10 +1,9 @@
 using FluentValidation;
 
 using LearnEase.Core.Dtos;
+using LearnEase.Core.Services;
 using LearnEase.Presentation.Utilities.Extensions;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Presentation.Controllers;
@@ -16,8 +15,11 @@ public class IdentityController : Controller
 
     private readonly IValidator<RegistrationDto> registrationValidator;
 
-    public IdentityController(IValidator<LoginDto> loginValidator, IValidator<RegistrationDto> registrationValidator)
+    private readonly IIdentityService identityService; 
+
+    public IdentityController(IIdentityService identityService, IValidator<LoginDto> loginValidator, IValidator<RegistrationDto> registrationValidator)
     {
+        this.identityService = identityService;
         this.loginValidator = loginValidator;
         this.registrationValidator = registrationValidator;
     }
@@ -50,6 +52,7 @@ public class IdentityController : Controller
             if (errorHandlerResult != null)
                 return errorHandlerResult;
 
+            await identityService.SignInAsync(loginDto);
 
             return base.RedirectToAction(controllerName: "Home", actionName: "Index");
         }
@@ -87,11 +90,14 @@ public class IdentityController : Controller
             if (errorHandlerResult != null)
                 return errorHandlerResult;
 
+            await identityService.RegisterAsync(registrationDto);
+
             return base.RedirectToRoute("LoginView");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-           return base.View();
+            this.ModelState.AddModelError("Password", ex.Message);
+            return base.View();
         }
     }
 
@@ -99,7 +105,7 @@ public class IdentityController : Controller
     [Route("/api/[controller]/[action]")]
     public async Task<IActionResult> Logout(string? ReturnUrl)
     {
-        await base.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await identityService.SignOutAsync();
 
         return base.RedirectToRoute(routeName: "LoginView", routeValues: new
         {

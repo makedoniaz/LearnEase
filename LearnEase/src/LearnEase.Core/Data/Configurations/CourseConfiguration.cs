@@ -24,5 +24,10 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder
             .Property(c => c.AmountOfLectures)
             .IsRequired();
+
+        builder
+            .HasOne(c => c.User)
+            .WithMany()
+            .HasForeignKey(c => c.UserId);
     }
 }

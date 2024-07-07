@@ -8,14 +8,21 @@ public class FeedbackConfiguration : IEntityTypeConfiguration<Feedback>
 {
     public void Configure(EntityTypeBuilder<Feedback> builder) {
         builder
-            .HasKey(c => c.Id);
+            .HasKey(f => f.Id);
             
         builder
-            .Property(c => c.Text)
+            .Property(f => f.Text)
             .IsRequired()
             .HasMaxLength(500);
 
         builder
-            .Ignore(c => c.Username);
+            .HasOne(f => f.User)
+            .WithMany()
+            .HasForeignKey(f => f.UserId);
+
+        builder
+            .HasOne(f => f.Course)
+            .WithMany()
+            .HasForeignKey(f => f.CourseId);
     }
 }

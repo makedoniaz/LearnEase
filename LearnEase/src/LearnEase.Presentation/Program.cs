@@ -1,13 +1,15 @@
 using System.Reflection;
+
 using FluentValidation;
 using LearnEase.Core.Data;
 using LearnEase.Core.Models;
 using LearnEase.Core.Repositories;
 using LearnEase.Core.Services;
-
 using LearnEase.Infrastructure.Middlewares;
 using LearnEase.Infrastructure.Repositories.EfCore;
 using LearnEase.Infrastructure.Services;
+
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +18,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Identity/Login";
+    });
+
 builder.Services.AddDbContext<LearnEaseDbContext>(
     (optionsBuilder) => optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"))
 );
@@ -23,6 +31,9 @@ builder.Services.AddDbContext<LearnEaseDbContext>(
 builder.Services.AddIdentity<User, IdentityRole>(options => {
     //options.Password.RequireDigit = true;
 }).AddEntityFrameworkStores<LearnEaseDbContext>();
+
+builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<ILogRepository, LogEfCoreRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
@@ -37,6 +48,12 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleService = scope.ServiceProvider.GetRequiredService<IRoleService>();
+    await roleService.SetupRolesAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
