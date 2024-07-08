@@ -1,5 +1,6 @@
 using System.Reflection;
-
+using System.Security.Authentication.ExtendedProtection;
+using System.Security.Claims;
 using FluentValidation;
 using LearnEase.Core.Data;
 using LearnEase.Core.Models;
@@ -30,6 +31,12 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Login";
 });
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("NotMuted", policy => {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("IsMuted", "False");
+    });
 
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IRoleService, RoleService>();

@@ -1,10 +1,17 @@
 @using System.Security.Claims;
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
 
 @model IEnumerable<Feedback>;
 
 @{
+    var authenticatedUser = await UserManager.GetUserAsync(User);
+    var userRoles = new List<string>();
+
+    if (authenticatedUser is not null)
+        userRoles = (await UserManager.GetRolesAsync(authenticatedUser)).ToList();
+
     var feedbacks = @Model;
-    var userRole = base.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
 }
 
 <style>
@@ -44,9 +51,11 @@
 </style>
 
 <div class="feedbacks-page">
-    <div class="page-functionality">
-        <a class="btn btn-dark px-3 btn-lg" asp-route="CreateFeedbackView">Create Feedback</a>
-    </div>
+    @if (authenticatedUser is not null && authenticatedUser.IsMuted == false) {
+        <div class="page-functionality">
+            <a class="btn btn-dark px-3 btn-lg" asp-route="CreateFeedbackView">Create Feedback</a>
+        </div>
+    }
 
     <hr>
 
@@ -73,7 +82,7 @@
                         @(feedback.Rating ?? 0)/5
                     </div>
                 </div>
-                @if(userRole == "Admin") {
+                @if(userRoles.Contains("Admin")) {
                     <div class="item-functionality">
                         <a href="#" onclick="DeleteFeedbackHandler(@feedback.Id)" class="text-danger">Delete</a> 
                         <a href="/Feedback/Edit/@feedback.Id" class="text-dark">Edit</a>

@@ -18,21 +18,10 @@
     }
 }
 
-@* <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-          crossorigin="anonymous">
-</head> *@
     <div class="container mt-5">
         <h1>Admin Panel</h1>
         <hr />
 
-        <!-- Список пользователей -->
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Users</h3>
@@ -44,25 +33,42 @@
                             <th>Username</th>
                             <th>Email</th>
                             <th>Roles</th>
-                            <th>Action</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var userWithRoles in usersWithRoles)
                         {
+                            if (await UserManager.GetUserAsync(User) == userWithRoles.User)
+                                continue;
+
                             <tr>
                                 <td>@userWithRoles.User.UserName</td>
                                 <td>@userWithRoles.User.Email</td>
                                 <td>
                                     @foreach (var role in userWithRoles.Roles)
                                     {
-                                        <span class="badge badge-secondary">@role</span>
+                                        <span class="badge badge-secondary text-dark">@role</span>
                                     }
                                 </td>
                                 <td>
-                                    <form method="post" asp-page-handler="DeleteUser" asp-route-userId="@userWithRoles.User.Id">
-                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                    </form>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Actions
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" asp-page-handler="Ban">Ban</a>
+
+                                            <form method="post" asp-controller="AdminPage" asp-action="ToggleMuteUser" asp-route-userId="@userWithRoles.User.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                        <a>@(userWithRoles.User.IsMuted ?  "Unmute" : "Mute")</a>
+                                                </button>
+                                            </form>
+
+                                            <a class="dropdown-item" asp-page-handler="Mute">Promote to Author</a>
+                                            <a class="dropdown-item" asp-page-handler="Mute">Promote to Admin</a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -82,4 +88,32 @@
         public User User { get; set; }
         public IEnumerable<string> Roles { get; set; }
     }
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(function (toggle) {
+                toggle.addEventListener('click', function () {
+                    var dropdownMenu = this.nextElementSibling;
+                    if (!dropdownMenu.classList.contains('show')) {
+                        dropdownMenu.classList.add('show');
+                    } else {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!event.target.closest('.dropdown')) {
+                    var dropdownMenus = document.querySelectorAll('.dropdown-menu');
+                    dropdownMenus.forEach(function (menu) {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
+        });
+    </script>
 }

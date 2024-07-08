@@ -1,4 +1,5 @@
 using System.Security.Authentication;
+using System.Security.Claims;
 using Azure.Identity;
 using LearnEase.Core.Dtos;
 using LearnEase.Core.Models;
@@ -57,6 +58,12 @@ public class IdentityService : IIdentityService
 
         if (!result.Succeeded)
             throw new AuthenticationFailedException("Invalid password!");
+
+        var existingClaim = (await userManager.GetClaimsAsync(user))
+                .FirstOrDefault(c => c.Type == "IsMuted");
+
+        if (existingClaim is null)
+            await userManager.AddClaimAsync(user, new Claim("IsMuted", user.IsMuted.ToString()));
     }
 
     public async Task SignOutAsync()

@@ -5,6 +5,7 @@ using LearnEase.Core.Services;
 using LearnEase.Presentation.Utilities.Extensions;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Presentation.Controllers;
@@ -14,12 +15,15 @@ public class FeedbackController : Controller
 {
     private readonly IFeedbackService feedbackService;
 
+    private readonly UserManager<User> userManager;
+
     private readonly IValidator<Feedback> validator;
 
-    public FeedbackController(IFeedbackService feedbackService, IValidator<Feedback> validator)
+    public FeedbackController(IFeedbackService feedbackService, IValidator<Feedback> validator, UserManager<User> userManager)
     {
         this.feedbackService = feedbackService;
         this.validator = validator;
+        this.userManager = userManager;
     }
 
     [HttpGet("{courseId:int}")]
@@ -37,12 +41,14 @@ public class FeedbackController : Controller
         }
     }
 
+    [Authorize(Policy = "NotMuted")]
     [Authorize(Roles="User, Author, Admin")]
     [HttpGet("[action]", Name = "CreateFeedbackView")]
     public IActionResult Create() {
         return View("FeedbackCreateMenu");
     }
 
+    [Authorize(Policy = "NotMuted")]
     [Authorize(Roles="User, Author, Admin")]
     [HttpPost(Name = "CreateFeedbackApi")]
     public async Task<IActionResult> Create([FromForm] Feedback newFeedback) {
@@ -58,8 +64,9 @@ public class FeedbackController : Controller
             if (errorHandlerResult != null)
                 return errorHandlerResult;
 
+            var authenticatedUser = await userManager.GetUserAsync(User);
 
-            await this.feedbackService.CreateFeedbackAsync(newFeedback);
+            await this.feedbackService.CreateFeedbackAsync(authenticatedUser, newFeedback);
             return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = newFeedback.CourseId });
         }
         catch (Exception ex) {

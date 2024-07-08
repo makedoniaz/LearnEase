@@ -8,7 +8,7 @@ public interface IFeedbackService
 
     Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId);
     
-    Task CreateFeedbackAsync(Feedback newFeedback);
+    Task CreateFeedbackAsync(User user, Feedback newFeedback);
 
     Task PutFeedbackAsync(int id, Feedback feedback);
 

@@ -34,12 +34,10 @@ public class FeedbackService : IFeedbackService
             throw new Exception("Feedback change didn't apply!");
     }
 
-    public async Task CreateFeedbackAsync(Feedback feedback)
-    {
-        if (feedback.UserId is not null) {
-            var user = await userManager.FindByIdAsync(feedback.UserId);
+    public async Task CreateFeedbackAsync(User user, Feedback feedback)
+    {   
+        if (feedback.UserId is not null)
             feedback.Username = user?.UserName;
-        }
 
         feedback.CreationDate = DateTime.Now;
 

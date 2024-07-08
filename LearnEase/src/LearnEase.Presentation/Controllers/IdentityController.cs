@@ -3,12 +3,11 @@ using FluentValidation;
 using LearnEase.Core.Dtos;
 using LearnEase.Core.Services;
 using LearnEase.Presentation.Utilities.Extensions;
-
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Presentation.Controllers;
 
-[Route("[controller]")]
 public class IdentityController : Controller
 {
     private readonly IValidator<LoginDto> loginValidator;
@@ -17,7 +16,9 @@ public class IdentityController : Controller
 
     private readonly IIdentityService identityService; 
 
-    public IdentityController(IIdentityService identityService, IValidator<LoginDto> loginValidator, IValidator<RegistrationDto> registrationValidator)
+
+    public IdentityController(IIdentityService identityService, IValidator<LoginDto> loginValidator, 
+    IValidator<RegistrationDto> registrationValidator)
     {
         this.identityService = identityService;
         this.loginValidator = loginValidator;
@@ -53,6 +54,11 @@ public class IdentityController : Controller
                 return errorHandlerResult;
 
             await identityService.SignInAsync(loginDto);
+
+            foreach (var claim in User.Claims)
+            {
+                Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
+            }
 
             if (string.IsNullOrWhiteSpace(loginDto.ReturnUrl) == false)
                 return base.Redirect(loginDto.ReturnUrl);
