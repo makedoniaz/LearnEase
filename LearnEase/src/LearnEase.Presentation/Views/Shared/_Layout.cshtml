@@ -1,5 +1,16 @@
-﻿@{
-    var IsAuthenticated = base.User.Identity?.IsAuthenticated ?? false;
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager;
+@inject SignInManager<User> SignInManager;
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var isSignedIn = SignInManager.IsSignedIn(User);
+    var IsAdmin = false;
+
+    if (isSignedIn) {
+        var UserRoles = await UserManager.GetRolesAsync(user);
+        IsAdmin = UserRoles.Contains("Admin");
+    }
 }
 
 <!DOCTYPE html>
@@ -27,7 +38,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">Courses</a>
                         </li>
 
-                        @if(IsAuthenticated == false) {
+                        @if(isSignedIn == false) {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-route="LoginView">Login</a>
                             </li>
@@ -36,6 +47,16 @@
                             </li>
                         }
                         else {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="UserProfile" asp-action="Index">User</a>
+                            </li>
+
+                            @if (IsAdmin) {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="AdminPage" asp-action="Index">AdminPage</a>
+                                </li>
+                            }
+
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Identity" asp-action="Logout">Logout</a>
                             </li>

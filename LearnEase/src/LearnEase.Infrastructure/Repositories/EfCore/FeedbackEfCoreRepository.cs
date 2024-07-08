@@ -61,4 +61,12 @@ public class FeedbackEfCoreRepository : IFeedbackRepository
 
         return changedObjectsCount;
     }
+
+    public async Task DeleteByCourseId(int courseId)
+    {
+        var feedbacksToDelete = _context.Feedbacks.Where(f => f.CourseId == courseId);
+        
+        _context.Feedbacks.RemoveRange(feedbacksToDelete);
+        await _context.SaveChangesAsync();
+    }
 }

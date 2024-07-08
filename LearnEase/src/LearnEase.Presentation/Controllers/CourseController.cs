@@ -14,12 +14,16 @@ public class CourseController : Controller
 {
     private readonly ICourseService courseService;
 
+    private readonly IFeedbackService feedbackService;
+
     private readonly IValidator<Course> validator;
 
-    public CourseController(ICourseService courseService, IValidator<Course> validator)
+
+    public CourseController(ICourseService courseService, IValidator<Course> validator, IFeedbackService feedbackService)
     {
         this.courseService = courseService;
         this.validator = validator;
+        this.feedbackService = feedbackService;
     }
 
     [HttpGet]
@@ -69,6 +73,7 @@ public class CourseController : Controller
     public async Task<IActionResult> Delete(int courseId) {
         try
         {
+            await this.feedbackService.DeleteFeedbacksByCourseId(courseId);
             await this.courseService.DeleteCourseLogo(courseId);
             await this.courseService.DeleteCourseByIdAsync(courseId);
 

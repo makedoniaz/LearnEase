@@ -18,12 +18,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Identity/Login";
-    });
-
 builder.Services.AddDbContext<LearnEaseDbContext>(
     (optionsBuilder) => optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"))
 );
@@ -31,6 +25,11 @@ builder.Services.AddDbContext<LearnEaseDbContext>(
 builder.Services.AddIdentity<User, IdentityRole>(options => {
     //options.Password.RequireDigit = true;
 }).AddEntityFrameworkStores<LearnEaseDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Login";
+});
 
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
@@ -63,17 +62,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseMiddleware<LogMiddleware>();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseMiddleware<LogMiddleware>();
 
 app.Run();

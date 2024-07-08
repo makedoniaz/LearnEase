@@ -13,4 +13,6 @@ public interface IFeedbackService
     Task PutFeedbackAsync(int id, Feedback feedback);
 
     Task DeleteFeedbackAsync(int id);
+
+    Task DeleteFeedbacksByCourseId(int courseId);
 }

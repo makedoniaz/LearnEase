@@ -54,6 +54,9 @@ public class IdentityController : Controller
 
             await identityService.SignInAsync(loginDto);
 
+            if (string.IsNullOrWhiteSpace(loginDto.ReturnUrl) == false)
+                return base.Redirect(loginDto.ReturnUrl);
+
             return base.RedirectToAction(controllerName: "Home", actionName: "Index");
         }
         catch

@@ -8,4 +8,6 @@ public interface IFeedbackRepository :
     IDeleteAsync<int>, IPutAsync<int, Feedback>
 {
     Task<IEnumerable<Feedback>> GetAllByCourseIdAsync(int courseId);
+
+    Task DeleteByCourseId(int courseId);
 }

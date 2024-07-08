@@ -60,11 +60,10 @@ public class FeedbackService : IFeedbackService
     public async Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId)
     {
         var feedbacks = await feedbackRepository.GetAllByCourseIdAsync(courseId);
-
-        // foreach(var feedback in feedbacks) {
-        //     feedback.Username = "TEST";
-        // }
-
         return feedbacks;
+    }
+
+    public async Task DeleteFeedbacksByCourseId(int courseId) {
+        await feedbackRepository.DeleteByCourseId(courseId);
     }
 }

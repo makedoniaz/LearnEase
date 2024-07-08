@@ -103,4 +103,9 @@ public class FeedbackDapperRepository : IFeedbackRepository
 
         return affectedRowsCount;
     }
+
+    public Task DeleteByCourseId(int courseId)
+    {
+        throw new NotImplementedException();
+    }
 }
