@@ -7,6 +7,7 @@
     var usersWithRoles = new List<UserWithRoles>();
 
     var users = UserManager.Users.ToList();
+
     foreach (var user in users)
     {
         var roles = UserManager.GetRolesAsync(user).Result;
@@ -34,6 +35,8 @@
                             <th>Email</th>
                             <th>Roles</th>
                             <th></th>
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,7 +60,11 @@
                                             Actions
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" asp-page-handler="Ban">Ban</a>
+                                            <form method="post" asp-controller="AdminPage" asp-action="ToggleBanUser" asp-route-userId="@userWithRoles.User.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                        <a>@(userWithRoles.User.IsActive ?  "Ban" : "Unban")</a>
+                                                </button>
+                                            </form>
 
                                             <form method="post" asp-controller="AdminPage" asp-action="ToggleMuteUser" asp-route-userId="@userWithRoles.User.Id">
                                                 <button type="submit" class="dropdown-item">
@@ -65,11 +72,34 @@
                                                 </button>
                                             </form>
 
-                                            <a class="dropdown-item" asp-page-handler="Mute">Promote to Author</a>
-                                            <a class="dropdown-item" asp-page-handler="Mute">Promote to Admin</a>
+                                            <form method="post" asp-controller="AdminPage" asp-action="TogglePromoteToAuthor" asp-route-userId="@userWithRoles.User.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                    <a>@(userWithRoles.Roles.Contains("Author") ? "Take Author rights" : "Promote to Author" )</a>
+                                                </button>
+                                            </form>
+
+                                            <form method="post" asp-controller="AdminPage" asp-action="TogglePromoteToAdmin" asp-route-userId="@userWithRoles.User.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                    <a>@(userWithRoles.Roles.Contains("Admin") ? "Take Admin rights" : "Promote to Admin" )</a>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </td>
+                                
+                                
+                                <td>
+                                    <div class="text-danger">
+                                        @(userWithRoles.User.IsMuted ? "Muted" : "")
+                                    </div>
+                                </td>
+
+                                 <td>
+                                    <div class="text-danger">
+                                        @(userWithRoles.User.IsActive ? "" : "Banned")
+                                    </div>
+                                </td>
+                                
                             </tr>
                         }
                     </tbody>

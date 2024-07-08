@@ -54,10 +54,14 @@ public class IdentityService : IIdentityService
         if(user == null)
             throw new InvalidCredentialException("User not found!");
 
+        if (!user.IsActive)
+            throw new AuthenticationException("Account is banned!");
+
         var result = await this.signInManager.PasswordSignInAsync(user, loginDto.Password, true, false);
 
         if (!result.Succeeded)
             throw new AuthenticationFailedException("Invalid password!");
+
 
         var existingClaim = (await userManager.GetClaimsAsync(user))
                 .FirstOrDefault(c => c.Type == "IsMuted");

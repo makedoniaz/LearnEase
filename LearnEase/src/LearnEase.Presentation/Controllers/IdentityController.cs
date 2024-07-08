@@ -55,19 +55,14 @@ public class IdentityController : Controller
 
             await identityService.SignInAsync(loginDto);
 
-            foreach (var claim in User.Claims)
-            {
-                Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
-            }
-
             if (string.IsNullOrWhiteSpace(loginDto.ReturnUrl) == false)
                 return base.Redirect(loginDto.ReturnUrl);
 
             return base.RedirectToAction(controllerName: "Home", actionName: "Index");
         }
-        catch
+        catch (Exception ex)
         {
-            base.TempData["AuthenticationError"] = "Incorrect login or password!";
+            base.TempData["AuthenticationError"] = ex.Message;
 
             return base.RedirectToRoute("LoginView", new
             {

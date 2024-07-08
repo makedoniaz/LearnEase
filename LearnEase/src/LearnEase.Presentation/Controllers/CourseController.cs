@@ -34,14 +34,14 @@ public class CourseController : Controller
     }
 
 
-    [Authorize(Roles="User, Author, Admin")]
+    [Authorize(Roles="Author, Admin")]
     [HttpGet("[action]", Name = "CourseCreateView")]
     public IActionResult Create() {
         return base.View("CourseCreateMenu");
     }
     
 
-    [Authorize(Roles="User, Author, Admin")]
+    [Authorize(Roles="Author, Admin")]
     [HttpPost(Name = "CourseCreateApi")]
     public async Task<IActionResult> Create([FromForm] Course newCourse, IFormFile? logo) {
         try {

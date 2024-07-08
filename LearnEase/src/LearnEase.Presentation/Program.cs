@@ -10,7 +10,6 @@ using LearnEase.Infrastructure.Middlewares;
 using LearnEase.Infrastructure.Repositories.EfCore;
 using LearnEase.Infrastructure.Services;
 
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +36,8 @@ builder.Services.AddAuthorizationBuilder()
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("IsMuted", "False");
     });
+
+builder.Services.AddScoped<IAdminPageService, AdminPageService>();
 
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IRoleService, RoleService>();

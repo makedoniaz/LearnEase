@@ -3,13 +3,14 @@
 @inject SignInManager<User> SignInManager;
 
 @{
-    var user = await UserManager.GetUserAsync(User);
-    var isSignedIn = SignInManager.IsSignedIn(User);
+    var userRoles = new List<string>();
+    var authenticatedUser = await UserManager.GetUserAsync(User);
     var IsAdmin = false;
+    var isSignedIn = authenticatedUser is not null;
 
     if (isSignedIn) {
-        var UserRoles = await UserManager.GetRolesAsync(user);
-        IsAdmin = UserRoles.Contains("Admin");
+        userRoles = (await UserManager.GetRolesAsync(authenticatedUser)).ToList();
+        IsAdmin = userRoles.Contains("Admin");
     }
 }
 

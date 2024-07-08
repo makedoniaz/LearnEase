@@ -1,8 +1,8 @@
 using LearnEase.Core.Models;
+using LearnEase.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace LearnEase.Presentation.Controllers;
@@ -10,11 +10,11 @@ namespace LearnEase.Presentation.Controllers;
 [Authorize(Roles = "Admin")]
 public class AdminPageController : Controller
 {
-    private readonly UserManager<User> userManager;
+    private readonly IAdminPageService adminPageService;
 
-    public AdminPageController(UserManager<User> userManager)
+    public AdminPageController(IAdminPageService adminPageService)
     {
-        this.userManager = userManager;
+        this.adminPageService = adminPageService;
     }
 
     [Authorize(Roles = "Admin")]
@@ -26,28 +26,52 @@ public class AdminPageController : Controller
     [HttpPost]
     [Route("[controller]/[action]/{userId}", Name = "ToggleMute")]
     public async Task<IActionResult> ToggleMuteUser(string userId) {
-        var user = await userManager.FindByIdAsync(userId);
+        try {
+            await adminPageService.ToggleMuteUser(userId);
+        }
+        catch (Exception ex) {
+            BadRequest(ex.Message);
+        }
 
-        if (user is null)
-            return BadRequest();
+        return RedirectToAction("Index");
+    }
 
-        user.IsMuted = !user.IsMuted;
-        await userManager.UpdateAsync(user);
+    [HttpPost]
+    [Route("[controller]/[action]/{userId}", Name = "TogglePromoteToAdmin")]
+    public async Task<IActionResult> TogglePromoteToAdmin(string userId) {
+        try {
+            await adminPageService.TogglePromoteUserToAdmin(userId);
+        }
+        catch (Exception ex) {
+            BadRequest(ex.Message);
+        }
+
+        return RedirectToAction("Index");
+    }
 
 
-        var claims = await userManager.GetClaimsAsync(user);
-        var isMutedClaim = claims.FirstOrDefault(c => c.Type == "IsMuted");
+    [HttpPost]
+    [Route("[controller]/[action]/{userId}", Name = "TogglePromoteToAuthor")]
+    public async Task<IActionResult> TogglePromoteToAuthor(string userId) {
+        try {
+            await adminPageService.TogglePromoteUserToAuthor(userId);
+        }
+        catch (Exception ex) {
+            BadRequest(ex.Message);
+        }
 
-        if (isMutedClaim == null)
-            throw new Exception("Muted claim doesn't exist!");
-            
-        await userManager.RemoveClaimAsync(user, isMutedClaim);
-        await userManager.AddClaimAsync(user, new Claim("IsMuted", user.IsMuted.ToString()));
+        return RedirectToAction("Index");
+    }
 
-
-        claims = await userManager.GetClaimsAsync(user);
-        foreach (var claim in claims)
-            Console.WriteLine($"Claim: {claim.Type} {claim.Value}");
+    [HttpPost]
+    [Route("[controller]/[action]/{userId}", Name = "ToggleBanUser")]
+    public async Task<IActionResult> ToggleBanUser(string userId) {
+        try {
+            await adminPageService.ToggleBanUser(userId);
+        }
+        catch (Exception ex) {
+            BadRequest(ex.Message);
+        }
 
         return RedirectToAction("Index");
     }

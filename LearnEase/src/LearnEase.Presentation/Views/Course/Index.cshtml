@@ -1,12 +1,19 @@
 @using System.Text.Json
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Mvc.ModelBinding
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
 
 @model IEnumerable<Course>
 
 @{
-    var courses = @Model;
-    var userRole = base.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+    var courses = Model;
+
+    var userRoles = new List<string>();
+    var authenticatedUser = await UserManager.GetUserAsync(User);
+
+    if (authenticatedUser is not null)
+        userRoles = (await UserManager.GetRolesAsync(authenticatedUser)).ToList();
 }
 
 <style>
@@ -38,7 +45,7 @@
         font-size: 18px;
     }
 
-    .list-item: :last-child {
+    .list-item:last-child {
         margin-bottom: 0px;
     }
 
@@ -61,9 +68,11 @@
 </style>
 
 <div>
-    <div class="page-functionality">
-        <a class="btn btn-dark px-3 btn-lg" asp-route="CourseCreateView">Create Course</a>
-    </div>
+    @if (userRoles.Contains("Author") || userRoles.Contains("Admin")) {
+        <div class="page-functionality">
+            <a class="btn btn-dark px-3 btn-lg" asp-route="CourseCreateView">Create Course</a>
+        </div>
+    }
     <hr>
     <div class="courses-info">
         <div class="main-header">
@@ -77,13 +86,13 @@
                     <div class="d-flex justify-content-between">
                         <div class="info-div">
                             <div class="item-name">
-                                <h3>@(course?.Name)</h3>
+                                <h3>@course?.Name</h3>
                             </div>
                             <div class="item-desc">
-                                @(course?.Description)
+                                @course?.Description
                             </div>
                             <div class="item-lect-amount">
-                                Amount of lectures: @(course?.AmountOfLectures ?? 0)
+                                Amount of lectures: @course?.AmountOfLectures ?? 0
                             </div>
                             <div class="item-date mb-4">
                                 @(course?.CreationDate.ToString() ?? "UNKNOWN")
@@ -99,8 +108,9 @@
                         </div>
                     </div>
 
-                    <a href="/Feedback/@(course?.Id)" class="btn btn-secondary btn-dark active item-button px-4" role="button" aria-pressed="true">Feedbacks</a>
-                    @if(userRole == "Admin") {
+                    <a href="/Feedback/@course?.Id" class="btn btn-secondary btn-dark active item-button px-4" role="button" aria-pressed="true">Feedbacks</a>
+
+                    @if (userRoles.Contains("Admin")) {
                         <a href="#" onclick="DeleteCourseHandler(@course.Id)" class="text-danger">Delete</a>
                     }
                 </div>
@@ -126,6 +136,8 @@
         var coursesList = document.querySelector('.courses-list')
         var course = coursesList.querySelector('#' + CSS.escape(courseId))
 
-        course.remove()
+        if (course) {
+            course.remove()
+        }
     }
 </script>
