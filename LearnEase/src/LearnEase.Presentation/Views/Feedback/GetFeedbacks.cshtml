@@ -82,7 +82,9 @@
                         @(feedback.Rating ?? 0)/5
                     </div>
                 </div>
-                @if(userRoles.Contains("Admin")) {
+                
+                @feedback.UserId
+                @if(authenticatedUser is not null && (userRoles.Contains("Admin") || authenticatedUser.Id == feedback.UserId)) {
                     <div class="item-functionality">
                         <a href="#" onclick="DeleteFeedbackHandler(@feedback.Id)" class="text-danger">Delete</a> 
                         <a href="/Feedback/Edit/@feedback.Id" class="text-dark">Edit</a>

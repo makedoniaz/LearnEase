@@ -1,6 +1,7 @@
 using LearnEase.Core.Models;
 using LearnEase.Core.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Presentation.Controllers
@@ -10,9 +11,12 @@ namespace LearnEase.Presentation.Controllers
     {
         private readonly ILessonService lessonService;
 
-        public LessonController(ILessonService lessonService)
+        private readonly UserManager<User> userManager;
+
+        public LessonController(ILessonService lessonService, UserManager<User> userManager)
         {
             this.lessonService = lessonService;
+            this.userManager = userManager;
         }
 
 
@@ -20,7 +24,12 @@ namespace LearnEase.Presentation.Controllers
         [HttpPost("api/[action]", Name = "CreateLessonApi")]
         public async Task<IActionResult> Create([FromForm] Lesson lesson) {
             try {
-                await lessonService.CreateLessonAsync(lesson);
+                var authenticatedUser = await userManager.GetUserAsync(User);
+
+                if (authenticatedUser is null)
+                    return Forbid();
+
+                await lessonService.CreateLessonAsync(authenticatedUser, lesson);
 
                 return RedirectToAction(actionName: "Details", controllerName: "Course", new { id = lesson.CourseId });
             }
@@ -43,6 +52,14 @@ namespace LearnEase.Presentation.Controllers
         {
             try
             {
+                var lesson = await lessonService.GetLessonByIdAsync(lessonId);
+
+                var user = await userManager.GetUserAsync(User);
+                var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
+                if (!isAdmin && lesson.UserId != user?.Id)
+                    return Forbid();
+                    
                 await this.lessonService.DeleteLessonByIdAsync(lessonId);
                 return Ok();
             }

@@ -12,6 +12,10 @@
 
     if (authenticatedUser is not null)
         userRoles = (await UserManager.GetRolesAsync(authenticatedUser)).ToList();
+
+    var isAdmin = userRoles.Contains("Admin");
+    var isAuthor = userRoles.Contains("Author");
+    var isAuthenticated = authenticatedUser is not null;
 }
 
 <style>
@@ -53,29 +57,36 @@
 <div>
     <h3>Lessons</h3>
     <div class="lesson-list">
-        
-        @foreach (var lesson in details.Lessons)
-        {
-            <div class="lesson-list-item" id="@lesson.Id">
-                <h4>@lesson.Name</h4>
-                <p>@lesson.Description</p>
-                <a href="@lesson.VideoUrl">Watch Video</a>
-                <p>@lesson.Timestamp</p>
-                <a href="#" onclick="DeleteLessonHandler(@lesson.Id)" class="text-danger">Delete</a> 
-            </div>
+        @if (!details.Lessons.Any()) {
+            <div class="mt-4 mb-4">There're not lessons yet...</div>
         }
-
-        <a asp-route="CreateLessonView" asp-route-courseId="@details.Course.Id" class="btn btn-primary">Create Lesson</a>
+        else {
+            @foreach (var lesson in details.Lessons)
+            {
+                <div class="lesson-list-item" id="@lesson.Id">
+                    <h4>@lesson.AuthorName</h4>
+                    <h4>@lesson.Name</h4>
+                    <p>@lesson.Description</p>
+                    <a href="@lesson.VideoUrl">Watch Video</a>
+                    <p>@lesson.Timestamp</p>
+                    @if(isAuthenticated && ((isAuthor && authenticatedUser.Id == lesson.UserId) || isAdmin))
+                    {
+                        <a href="#" onclick="DeleteLessonHandler(@lesson.Id)" class="text-danger">Delete</a> 
+                    }
+                </div>
+            }
+        }
+        @if (isAuthenticated && (isAuthor || isAdmin))
+        {
+            <a asp-route="CreateLessonView" asp-route-courseId="@details.Course.Id" class="btn btn-primary mb-4">Create Lesson</a>
+        }
     </div>
 
     <h3>Feedbacks</h3>
-
+    @if (!details.Feedbacks.Any()) {
+            <div>There're not feedbacks yet...</div>
+        }
     <div class="feedbacks-page">
-    @if (authenticatedUser is not null && authenticatedUser.IsMuted == false) {
-        <div class="page-functionality">
-            <a asp-controller="Feedback" asp-action="Create" asp-route-courseId="@details.Course.Id" class="btn btn-dark px-3 btn-lg">Create Feedback</a>
-        </div>
-    }
 
     <hr>
         <div class="feedbacks-list mb-5">
@@ -101,7 +112,8 @@
                             @(feedback.Rating ?? 0)/5
                         </div>
                     </div>
-                    @if(userRoles.Contains("Admin")) {
+                    @if(isAuthenticated && ((isAuthor && authenticatedUser.Id == feedback.UserId) || isAdmin))
+                    {
                         <div class="item-functionality">
                             <a href="#" onclick="DeleteFeedbackHandler(@feedback.Id)" class="text-danger">Delete</a> 
                             <a href="/Feedback/Edit/@feedback.Id" class="text-dark">Edit</a>
@@ -110,6 +122,13 @@
                 </div>
             }
         </div>
+
+        @if ((isAuthor || isAdmin) && authenticatedUser?.IsMuted == false)
+        {
+            <div class="page-functionality">
+                <a asp-controller="Feedback" asp-action="Create" asp-route-courseId="@details.Course.Id" class="btn btn-dark px-3 btn-lg">Create Feedback</a>
+            </div>
+        }
     </div>
 </div>
 

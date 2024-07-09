@@ -5,6 +5,7 @@ using LearnEase.Core.Services;
 using LearnEase.Presentation.Utilities.Extensions;
 using LearnEase.Presentation.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Presentation.Controllers;
@@ -18,12 +19,16 @@ public class CourseController : Controller
 
     private readonly IValidator<Course> validator;
 
+    private readonly UserManager<User> userManager;
 
-    public CourseController(ICourseService courseService, IValidator<Course> validator, IFeedbackService feedbackService)
+
+    public CourseController(ICourseService courseService, IValidator<Course> validator, 
+    IFeedbackService feedbackService, UserManager<User> userManager)
     {
         this.courseService = courseService;
         this.validator = validator;
         this.feedbackService = feedbackService;
+        this.userManager = userManager;
     }
 
     [HttpGet]
@@ -68,11 +73,23 @@ public class CourseController : Controller
     }
     
 
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles="Admin, Author")]
     [HttpDelete("{courseId:int}")]
     public async Task<IActionResult> Delete(int courseId) {
         try
         {
+            var course = await courseService.GetCourseByIdAsync(courseId);
+
+            if (course == null)
+                return NotFound();
+
+            var user = await userManager.GetUserAsync(User);
+            var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
+            if (!isAdmin && course.UserId != user?.Id)
+                return Forbid();
+
+
             await this.feedbackService.DeleteFeedbacksByCourseId(courseId);
             await this.courseService.DeleteCourseLogo(courseId);
             await this.courseService.DeleteCourseByIdAsync(courseId);
@@ -106,9 +123,6 @@ public class CourseController : Controller
     public async Task<IActionResult> Details(int id) {
         try {
             var course = await courseService.GetCourseByIdAsync(id);
-
-            if (course.Lessons is null)
-                throw new ArgumentException("Lessons is null!");
 
             var viewModel = new CourseDetailsViewModel
             {

@@ -78,7 +78,6 @@
         <div class="main-header">
             <h1>All courses</h1>
         </div>
-
         <div class="courses-list">
             @foreach (var course in courses)
             {
@@ -109,8 +108,8 @@
                     </div>
                     
                     <a asp-action="Details" asp-controller="Course" asp-route-id="@course?.Id" class="btn btn-secondary btn-dark active item-button px-4">View Details</a>
-                    @if (userRoles.Contains("Admin")) {
-                        <a href="#" onclick="DeleteCourseHandler(@course.Id)" class="text-danger">Delete</a>
+                    @if (authenticatedUser is not null && (userRoles.Contains("Admin") || authenticatedUser.Id == course?.UserId)) {
+                        <a href="#" onclick="DeleteCourseHandler(@course?.Id)" class="text-danger">Delete</a>
                     }
                 </div>
             }

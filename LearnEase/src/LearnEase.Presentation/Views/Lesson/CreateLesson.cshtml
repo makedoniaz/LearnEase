@@ -1,6 +1,11 @@
 @model Lesson;
 
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
 @{
+    var authenticatedUser = await UserManager.GetUserAsync(User);
     var courseId = (int)TempData["courseId"];
 }
 
@@ -9,6 +14,7 @@
 
     <form asp-route="CreateLessonApi" method="post">
         <input type="hidden" asp-for="CourseId" value="@courseId">
+        <input type="hidden" asp-for="UserId" value="@authenticatedUser?.Id">
 
         <div class="form-group">
             <label asp-for="Name" class="control-label">Lesson Name:</label>

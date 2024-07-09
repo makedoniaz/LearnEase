@@ -1,7 +1,10 @@
 @model Course;
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
 
 @{
-    var userId = base.User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+    var authenticatedUser = await UserManager.GetUserAsync(User);
 }
 
 
@@ -43,7 +46,7 @@
         <div class="courses-create-form round">
             <form asp-route="CourseCreateApi" enctype="multipart/form-data">
 
-                <input type="hidden" asp-for="UserId" value="@userId">
+                <input type="hidden" asp-for="UserId" value="@authenticatedUser?.Id">
 
                 <div class="form-item mb-4">
                     <label asp-for="Name" class="d-block h5 mb-2 text-dark">Name:</label>

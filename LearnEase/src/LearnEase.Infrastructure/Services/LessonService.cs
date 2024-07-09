@@ -1,16 +1,19 @@
 using LearnEase.Core.Models;
 using LearnEase.Core.Repositories;
 using LearnEase.Core.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace LearnEase.Infrastructure.Services;
 
 public class LessonService : ILessonService
 {
-
     private readonly ILessonRepository lessonRepository;
 
-    public LessonService(ILessonRepository lessonRepository) {
+    private readonly UserManager<User> userManager;
+
+    public LessonService(ILessonRepository lessonRepository, UserManager<User> userManager) {
         this.lessonRepository = lessonRepository;
+        this.userManager = userManager;
     }
 
     public async Task<Lesson> GetLessonByIdAsync(int lessonId)
@@ -23,8 +26,9 @@ public class LessonService : ILessonService
         return lesson;
     }
 
-    public async Task CreateLessonAsync(Lesson newLesson)
+    public async Task CreateLessonAsync(User user, Lesson newLesson)
     {
+        newLesson.AuthorName = user.UserName;
         newLesson.Timestamp = DateTime.Now;
 
         var changesCount = await lessonRepository.CreateAsync(newLesson);

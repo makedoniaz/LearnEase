@@ -26,21 +26,6 @@ public class FeedbackController : Controller
         this.userManager = userManager;
     }
 
-    [HttpGet("{courseId:int}")]
-    public async Task<IActionResult> GetFeedbacks(int courseId) {
-        try
-        {
-            var feedbacks = await this.feedbackService.GetAllFeedbacksByCourseIdAsync(courseId);
-            TempData["courseId"] = courseId;
-
-            return View(feedbacks);
-        }
-        catch(Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
     [Authorize(Policy = "NotMuted")]
     [Authorize(Roles="User, Author, Admin")]
     [HttpGet("[action]", Name = "CreateFeedbackView")]
@@ -75,20 +60,32 @@ public class FeedbackController : Controller
         }
     }
 
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles="Author, Admin")]
     [Route("Edit/{feedbackId:int}")]
     public async Task<IActionResult> GetFeedbackChangeMenu(int feedbackId) {
+
         var feedback = await feedbackService.GetFeedbackById(feedbackId);
+        var user = await userManager.GetUserAsync(User);
+        var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
+        if (!isAdmin && feedback.UserId != user?.Id)
+            return Forbid();
 
         return base.View("FeedbackChangeMenu", feedback);
     }
 
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles="Admin, Author")]
     [HttpPut("{feedbackId:int}")]
     public async Task<IActionResult> Change(int feedbackId, [FromBody] Feedback feedback)
     {
         try
         {
+            var user = await userManager.GetUserAsync(User);
+            var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
+            if (!isAdmin && feedback.UserId != user?.Id)
+                return Forbid();
+
             var validationResult = await validator.ValidateAsync(feedback);
 
             var errorHandlerResult = this.HandleValidationErrors(
@@ -110,12 +107,23 @@ public class FeedbackController : Controller
         }
     }
 
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles="Admin, Author")]
     [HttpDelete("{feedbackId:int}")]
     public async Task<IActionResult> Delete(int feedbackId)
     {
         try
         {
+            var feedback = await feedbackService.GetFeedbackById(feedbackId);
+
+            if (feedback == null)
+                return NotFound();
+
+            var user = await userManager.GetUserAsync(User);
+            var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+
+            if (!isAdmin && feedback.UserId != user?.Id)
+                return Forbid();
+
             await this.feedbackService.DeleteFeedbackAsync(feedbackId);
             return Ok();
         }

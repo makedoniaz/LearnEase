@@ -8,7 +8,7 @@ public interface ILessonService
 
     Task DeleteLessonByIdAsync(int lessonId);
     
-    Task CreateLessonAsync(Lesson newLesson);
+    Task CreateLessonAsync(User user, Lesson newLesson);
 
     Task PutLessonAsync(int id, Lesson lesson);
 }
