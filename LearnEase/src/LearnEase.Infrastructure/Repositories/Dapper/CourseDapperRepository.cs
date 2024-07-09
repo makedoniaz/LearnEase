@@ -54,4 +54,9 @@ public class CourseDapperRepository : ICourseRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task<IEnumerable<Lesson>> GetAllLessonsByCourseIdAsync(int courseId)
+    {
+        throw new NotImplementedException();
+    }
 }

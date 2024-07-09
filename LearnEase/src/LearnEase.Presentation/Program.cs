@@ -1,6 +1,4 @@
 using System.Reflection;
-using System.Security.Authentication.ExtendedProtection;
-using System.Security.Claims;
 using FluentValidation;
 using LearnEase.Core.Data;
 using LearnEase.Core.Models;
@@ -48,6 +46,9 @@ builder.Services.AddScoped<LogMiddleware>();
 
 builder.Services.AddScoped<ICourseRepository, CourseEfCoreRepository>();
 builder.Services.AddScoped<ICourseService, CourseService>();
+
+builder.Services.AddScoped<ILessonRepository, LessonEfCoreRepository>();
+builder.Services.AddScoped<ILessonService, LessonService>();
 
 builder.Services.AddScoped<IFeedbackRepository, FeedbackEfCoreRepository>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();

@@ -44,7 +44,8 @@ public class FeedbackController : Controller
     [Authorize(Policy = "NotMuted")]
     [Authorize(Roles="User, Author, Admin")]
     [HttpGet("[action]", Name = "CreateFeedbackView")]
-    public IActionResult Create() {
+    public IActionResult Create(int courseId) {
+        TempData["courseId"] = courseId;
         return View("FeedbackCreateMenu");
     }
 
@@ -67,7 +68,7 @@ public class FeedbackController : Controller
             var authenticatedUser = await userManager.GetUserAsync(User);
 
             await this.feedbackService.CreateFeedbackAsync(authenticatedUser, newFeedback);
-            return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = newFeedback.CourseId });
+            return base.RedirectToAction(controllerName: "Course", actionName: "Details", routeValues: new { id = newFeedback.CourseId });
         }
         catch (Exception ex) {
             return BadRequest(ex.Message);

@@ -19,4 +19,8 @@ public class Course
     public string? UserId { get; set; }
     
     public User User { get; set; }
+
+    public IEnumerable<Lesson> Lessons { get; set; }
+
+    public IEnumerable<Feedback> Feedbacks { get; set; }
 }

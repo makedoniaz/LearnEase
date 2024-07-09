@@ -13,7 +13,10 @@ public class CourseEfCoreRepository : ICourseRepository
     
     public async Task<Course?> GetByIdAsync(int id)
     {
-        return await _context.Courses.FirstOrDefaultAsync((c) => c.Id == id);
+        return await _context.Courses
+            .Include(c => c.Lessons)
+            .Include(c => c.Feedbacks)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
     
     public async Task<IEnumerable<Course>> GetAllAsync()

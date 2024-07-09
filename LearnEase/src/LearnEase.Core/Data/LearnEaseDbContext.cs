@@ -9,6 +9,8 @@ public class LearnEaseDbContext : IdentityDbContext<User, IdentityRole, string>
 {
     public DbSet<Course> Courses { get; set; }
 
+    public DbSet<Lesson> Lessons { get; set; }
+
     public DbSet<Feedback> Feedbacks { get; set; }
 
     public DbSet<Log> Logs { get; set; }

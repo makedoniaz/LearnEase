@@ -1,7 +1,6 @@
 using LearnEase.Core.Models;
 using LearnEase.Core.Repositories;
 using LearnEase.Core.Services;
-using Microsoft.AspNetCore.Identity;
 
 namespace LearnEase.Infrastructure.Services;
 
@@ -9,11 +8,8 @@ public class FeedbackService : IFeedbackService
 {
     private readonly IFeedbackRepository feedbackRepository;
 
-    private readonly UserManager<User> userManager;
-
-    public FeedbackService(IFeedbackRepository feedbackRepository, UserManager<User> userManager) {
+    public FeedbackService(IFeedbackRepository feedbackRepository) {
         this.feedbackRepository = feedbackRepository;
-        this.userManager = userManager;
     }
 
     public async Task<Feedback> GetFeedbackById(int id)

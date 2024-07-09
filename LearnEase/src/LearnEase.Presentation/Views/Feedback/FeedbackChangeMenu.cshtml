@@ -100,7 +100,7 @@
             if (!response.ok)
                 throw new Error(response.statusText)
 
-            RedirectToGetFeedbacksPage(@feedback.CourseId)
+            RedirectToCourseDetailsPage(@feedback.CourseId)
         })
         .catch((err) => console.log(err.message));
     }
@@ -123,7 +123,7 @@
         }
     }
 
-    function RedirectToGetFeedbacksPage(courseId) {
-        window.location.assign('/Feedback/' + courseId);
+    function RedirectToCourseDetailsPage(courseId) {
+        window.location.assign('/Course/Details?id=' + courseId);
     }
 </script>

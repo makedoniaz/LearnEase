@@ -3,7 +3,7 @@ using FluentValidation;
 using LearnEase.Core.Models;
 using LearnEase.Core.Services;
 using LearnEase.Presentation.Utilities.Extensions;
-
+using LearnEase.Presentation.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -98,5 +98,29 @@ public class CourseController : Controller
 
         var fileStream = System.IO.File.Open(course.CourseLogoPath, FileMode.Open);
         return base.File(fileStream, "image/jpeg");
+    }
+
+
+    [Authorize(Roles="User, Author, Admin")]
+    [HttpGet("[action]", Name = "GetCourseDetails")]
+    public async Task<IActionResult> Details(int id) {
+        try {
+            var course = await courseService.GetCourseByIdAsync(id);
+
+            if (course.Lessons is null)
+                throw new ArgumentException("Lessons is null!");
+
+            var viewModel = new CourseDetailsViewModel
+            {
+                Course = course,
+                Lessons = course.Lessons,
+                Feedbacks = course.Feedbacks
+            };
+
+            return View("CoursePage", viewModel);
+        }
+        catch (Exception ex) {
+            return BadRequest(ex.Message);
+        }
     }
 }
