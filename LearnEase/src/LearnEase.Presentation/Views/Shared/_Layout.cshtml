@@ -28,7 +28,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LearnEase.Presentation</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LearnEase</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -41,27 +41,28 @@
 
                         @if(isSignedIn == false) {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-route="LoginView">Login</a>
+                                <a class="nav-link text-dark text-right" asp-route="LoginView">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-route="RegistrationView">Registration</a>
+                                <a class="nav-link text-dark text-right" asp-route="RegistrationView">Registration</a>
                             </li>
                         }
                         else {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="UserProfile" asp-action="Index">User</a>
-                            </li>
-
                             @if (IsAdmin) {
-                                <li class="nav-item">
+                                <li class="nav-item ml-auto">
                                     <a class="nav-link text-dark" asp-controller="AdminPage" asp-action="Index">AdminPage</a>
                                 </li>
                             }
 
-                            <li class="nav-item">
+                            <li class="nav-item ml-auto">
+                                <a class="nav-link text-dark" asp-controller="UserProfile" asp-action="Index">User</a>
+                            </li>
+
+                            <li class="nav-item ml-auto">
                                 <a class="nav-link text-dark" asp-controller="Identity" asp-action="Logout">Logout</a>
                             </li>
                         }
+                        
                 </div>
             </div>
         </nav>

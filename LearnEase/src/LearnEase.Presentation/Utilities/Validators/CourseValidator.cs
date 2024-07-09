@@ -14,9 +14,5 @@ public class CourseValidator : AbstractValidator<Course>
         base.RuleFor(c => c.Description)
             .NotEmpty()
             .MaximumLength(500);
-
-        base.RuleFor(c => c.AmountOfLectures)
-            .NotEmpty()
-            .GreaterThan(0);
     }
 }
