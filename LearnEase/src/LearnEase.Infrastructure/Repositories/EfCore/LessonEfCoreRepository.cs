@@ -26,12 +26,12 @@ public class LessonEfCoreRepository : ILessonRepository
 
     public async Task<int> DeleteAsync(int lessonId)
     {
-        var lessonToDelete = _context.Feedbacks.FirstOrDefault(l => l.Id == lessonId);
+        var lessonToDelete = _context.Lessons.FirstOrDefault(l => l.Id == lessonId);
 
         if (lessonToDelete is null)
             return 0;
 
-        _context.Feedbacks.Remove(lessonToDelete);
+        _context.Lessons.Remove(lessonToDelete);
         var changedObjectsCount = await _context.SaveChangesAsync();
 
         return changedObjectsCount;

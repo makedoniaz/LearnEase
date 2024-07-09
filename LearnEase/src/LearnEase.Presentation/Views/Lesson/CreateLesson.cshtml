@@ -1,28 +1,29 @@
 @model Lesson;
+
 @{
-    var lesson = @Model;
+    var courseId = (int)TempData["courseId"];
 }
 
 <div class="container">
     <h2>Create Lesson</h2>
 
     <form asp-route="CreateLessonApi" method="post">
-        <input type="hidden" asp-for="CourseId" value="@lesson.CourseId">
+        <input type="hidden" asp-for="CourseId" value="@courseId">
 
         <div class="form-group">
-            <label asp-for="@lesson.Name" class="control-label">Lesson Name:</label>
-            <input asp-for="@lesson.Name" class="form-control" />
+            <label asp-for="Name" class="control-label">Lesson Name:</label>
+            <input asp-for="Name" class="form-control" />
             
         </div>
 
         <div class="form-group">
-            <label asp-for="@lesson.VideoUrl" class="control-label">Video URL:</label>
-            <input asp-for="@lesson.VideoUrl" class="form-control" />
+            <label asp-for="VideoUrl" class="control-label">Video URL:</label>
+            <input asp-for="VideoUrl" class="form-control" />
         </div>
 
         <div class="form-group">
-            <label asp-for="@lesson.Description" class="control-label">Description:</label>
-            <textarea asp-for="@lesson.Description" class="form-control"></textarea>
+            <label asp-for="Description" class="control-label">Description:</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary">Create</button>

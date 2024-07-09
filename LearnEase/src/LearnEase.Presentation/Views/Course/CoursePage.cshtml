@@ -52,19 +52,21 @@
 
 <div>
     <h3>Lessons</h3>
-    <ul>
+    <div class="lesson-list">
+        
         @foreach (var lesson in details.Lessons)
         {
-            <li>
+            <div class="lesson-list-item" id="@lesson.Id">
                 <h4>@lesson.Name</h4>
                 <p>@lesson.Description</p>
                 <a href="@lesson.VideoUrl">Watch Video</a>
                 <p>@lesson.Timestamp</p>
-            </li>
+                <a href="#" onclick="DeleteLessonHandler(@lesson.Id)" class="text-danger">Delete</a> 
+            </div>
         }
 
-        <button>Create Lesson</button>
-    </ul>
+        <a asp-route="CreateLessonView" asp-route-courseId="@details.Course.Id" class="btn btn-primary">Create Lesson</a>
+    </div>
 
     <h3>Feedbacks</h3>
 
@@ -111,24 +113,45 @@
     </div>
 </div>
 
+@section Scripts{
+    <script> 
+        function DeleteFeedbackHandler(feedbackId) {
+            fetch('/Feedback/' + feedbackId, { method: 'DELETE' })
+                .then((response) => {
+                    if (!response.ok)
+                        throw new Error(response.statusText)
 
-<script> 
-    function DeleteFeedbackHandler(feedbackId) {
-        fetch('/Feedback/' + feedbackId, { method: 'DELETE' })
-            .then((response) => {
-                if (!response.ok)
-                    throw new Error(response.statusText)
+                    DeleteFeedbackFromDOM(feedbackId)
+                    console.log("Feedback was successfully deleted!")
+                })
+                .catch((err) => console.log(err.message));
+        }
 
-                DeleteFeedbackFromDOM(feedbackId)
-                console.log("Feedback was successfully deleted!")
-            })
-            .catch((err) => console.log(err.message));
-    }
+        function DeleteFeedbackFromDOM(feedbackId) {
+            var feedbacksList = document.querySelector('.feedbacks-list')
+            var feedback = feedbacksList.querySelector('#' + CSS.escape(feedbackId))
 
-    function DeleteFeedbackFromDOM(feedbackId) {
-        var feedbacksList = document.querySelector('.feedbacks-list')
-        var feedback = feedbacksList.querySelector('#' + CSS.escape(feedbackId))
+            feedback.remove()
+        }
 
-        feedback.remove()
-    }
-</script>
+        function DeleteLessonHandler(lessonId) {
+            console.log(lessonId)
+            fetch('/Lesson/' + lessonId, { method: 'DELETE' })
+                .then((response) => {
+                    if (!response.ok)
+                        throw new Error(response.statusText)
+
+                    DeleteLessonFromDOM(lessonId)
+                    console.log("Lesson was successfully deleted!")
+                })
+                .catch((err) => console.log(err.message));
+        }
+
+        function DeleteLessonFromDOM(lessonId) {
+            var lessonList = document.querySelector('.lesson-list')
+            var lesson = lessonList.querySelector('#' + CSS.escape(lessonId))
+
+            lesson.remove()
+        }
+    </script>
+}

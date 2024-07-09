@@ -22,7 +22,7 @@ namespace LearnEase.Presentation.Controllers
             try {
                 await lessonService.CreateLessonAsync(lesson);
 
-                return RedirectToAction(actionName: "GetCourseDetails", controllerName: "Courses", new { id = lesson.CourseId });
+                return RedirectToAction(actionName: "Details", controllerName: "Course", new { id = lesson.CourseId });
             }
             catch (Exception ex) {
                 return BadRequest(ex.Message);
@@ -30,9 +30,26 @@ namespace LearnEase.Presentation.Controllers
         }
 
         [Authorize(Roles="Author, Admin")]
-        [HttpGet("[action]", Name = "GetCreateLessonView")]
-        public IActionResult Create() {
+        [HttpGet("[action]", Name = "CreateLessonView")]
+        public IActionResult Create(int courseId) {
+            TempData["courseId"] = courseId;
             return View("CreateLesson");
+        }
+
+
+        [Authorize(Roles="Admin, Author")]
+        [HttpDelete("{lessonId:int}")]
+        public async Task<IActionResult> Delete(int lessonId)
+        {
+            try
+            {
+                await this.lessonService.DeleteLessonByIdAsync(lessonId);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

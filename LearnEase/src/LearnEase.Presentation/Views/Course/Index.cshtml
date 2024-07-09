@@ -107,8 +107,7 @@
                             }
                         </div>
                     </div>
-
-                    @* <a href="/Course/Details/@course?.Id" class="btn btn-secondary btn-dark active item-button px-4" role="button" aria-pressed="true">Feedbacks</a> *@
+                    
                     <a asp-action="Details" asp-controller="Course" asp-route-id="@course?.Id" class="btn btn-secondary btn-dark active item-button px-4">View Details</a>
                     @if (userRoles.Contains("Admin")) {
                         <a href="#" onclick="DeleteCourseHandler(@course.Id)" class="text-danger">Delete</a>
