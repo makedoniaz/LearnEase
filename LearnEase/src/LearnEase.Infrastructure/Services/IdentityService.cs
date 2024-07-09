@@ -4,6 +4,7 @@ using Azure.Identity;
 using LearnEase.Core.Dtos;
 using LearnEase.Core.Models;
 using LearnEase.Core.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,14 +16,11 @@ public class IdentityService : IIdentityService
 
     private readonly UserManager<User> userManager;
 
-    private readonly IRoleService roleService;
 
-
-    public IdentityService(SignInManager<User> signInManager, UserManager<User> userManager, IRoleService roleService)
+    public IdentityService(SignInManager<User> signInManager, UserManager<User> userManager)
     {
         this.signInManager = signInManager;
         this.userManager = userManager;
-        this.roleService = roleService;
     }
 
     public async Task RegisterAsync(RegistrationDto registrationDto)
@@ -70,8 +68,43 @@ public class IdentityService : IIdentityService
             await userManager.AddClaimAsync(user, new Claim("IsMuted", user.IsMuted.ToString()));
     }
 
+    public async Task SetDefaultAvatarAsync(string userName) {
+        var user = await userManager.FindByNameAsync(userName);
+
+        if (user is null)
+            throw new ArgumentNullException();
+
+        user.AvatarPath = "Assets/Avatars/default.png";
+    }
+
+    public async Task SetAvatarAsync(string userId, IFormFile? avatar) {
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user is null)
+            throw new ArgumentNullException();
+
+        if (avatar is null)
+            return;
+
+        var extension = new FileInfo(avatar.FileName).Extension[1..];
+        user.AvatarPath = $"Assets/Avatars/{user.Id}.{extension}";
+
+        using var newFileStream = File.Create(user.AvatarPath);
+        await avatar.CopyToAsync(newFileStream);
+    }
+
     public async Task SignOutAsync()
     {
         await this.signInManager.SignOutAsync();
+    }
+
+    public async Task<User> FindUserById(string userId)
+    {
+        var user = await this.userManager.FindByIdAsync(userId);
+
+        if (user is null)
+            throw new ArgumentNullException();
+
+        return user;
     }
 }

@@ -74,6 +74,8 @@
                         <a href="#" onclick="DeleteLessonHandler(@lesson.Id)" class="text-danger">Delete</a> 
                     }
                 </div>
+
+                <hr>
             }
         }
         @if (isAuthenticated && (isAuthor || isAdmin))
@@ -84,7 +86,7 @@
 
     <h3>Feedbacks</h3>
     @if (!details.Feedbacks.Any()) {
-            <div>There're not feedbacks yet...</div>
+            <div>There're no feedbacks yet...</div>
         }
     <div class="feedbacks-page">
 
@@ -94,6 +96,10 @@
             {
                 <div class="list-item mb-4" id="@feedback.Id" >
                     <div class="info-wrapper d-flex justify-content-between align-items-center">
+                        <div class="avatar-wrapper">
+                            <img width="100" height="100" src="~/Identity/Avatar/@feedback.UserId" alt="Avatar" class="rounded-circle" id="avatarImage">
+                        </div>
+
                         <div class="item-text-info">
                             <div class="item-username h4 mb-3">
                                 @feedback.Username

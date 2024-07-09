@@ -3,7 +3,7 @@ using FluentValidation;
 using LearnEase.Core.Dtos;
 using LearnEase.Core.Services;
 using LearnEase.Presentation.Utilities.Extensions;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Presentation.Controllers;
@@ -95,6 +95,7 @@ public class IdentityController : Controller
                 return errorHandlerResult;
 
             await identityService.RegisterAsync(registrationDto);
+            await identityService.SetDefaultAvatarAsync(registrationDto.Login);
 
             return base.RedirectToRoute("LoginView");
         }
@@ -104,6 +105,36 @@ public class IdentityController : Controller
             return base.View();
         }
     }
+
+    [Authorize]
+    [HttpGet("[controller]/[action]/{userId}")]
+    public async Task<IActionResult> Avatar(string userId) {
+        
+        var user = await identityService.FindUserById(userId);
+
+        if (user is null)
+            return BadRequest();
+
+        if (user.AvatarPath is null)
+            return Ok();
+
+        var fileStream = System.IO.File.Open(user.AvatarPath, FileMode.Open);
+        return base.File(fileStream, "image/jpeg");
+    }
+
+    [Authorize]
+    [HttpPost]
+    [Route("[controller]/[action]/{userId}", Name = "SetAvatar")]
+    public async Task<IActionResult> SetAvatar(string userId, IFormFile? avatar) {
+        try {
+            await this.identityService.SetAvatarAsync(userId, avatar);
+            return RedirectToAction(controllerName: "UserProfile", actionName: "Index");
+        }
+        catch (Exception ex) {
+            return BadRequest(ex.Message);
+        }
+    }
+
 
     [HttpGet]
     [Route("/api/[controller]/[action]")]
