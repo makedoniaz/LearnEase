@@ -1,0 +1,149 @@
+@page
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+
+@{
+    var usersWithRoles = new List<UserWithRoles>();
+
+    var users = UserManager.Users.ToList();
+
+    foreach (var user in users)
+    {
+        var roles = UserManager.GetRolesAsync(user).Result;
+        usersWithRoles.Add(new UserWithRoles
+        {
+            User = user,
+            Roles = roles
+        });
+    }
+}
+
+    <div class="container mt-5">
+        <h1>Admin Panel</h1>
+        <hr />
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Users</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var userWithRoles in usersWithRoles)
+                        {
+                            if (await UserManager.GetUserAsync(User) == userWithRoles.User)
+                                continue;
+
+                            <tr>
+                                <td>@userWithRoles.User.UserName</td>
+                                <td>@userWithRoles.User.Email</td>
+                                <td>
+                                    @foreach (var role in userWithRoles.Roles)
+                                    {
+                                        <span class="badge badge-secondary text-dark">@role</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Actions
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <form method="post" asp-controller="AdminPage" asp-action="ToggleBanUser" asp-route-userId="@userWithRoles.User.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                        <a>@(userWithRoles.User.IsActive ?  "Ban" : "Unban")</a>
+                                                </button>
+                                            </form>
+
+                                            <form method="post" asp-controller="AdminPage" asp-action="ToggleMuteUser" asp-route-userId="@userWithRoles.User.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                        <a>@(userWithRoles.User.IsMuted ?  "Unmute" : "Mute")</a>
+                                                </button>
+                                            </form>
+
+                                            <form method="post" asp-controller="AdminPage" asp-action="TogglePromoteToAuthor" asp-route-userId="@userWithRoles.User.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                    <a>@(userWithRoles.Roles.Contains("Author") ? "Take Author rights" : "Promote to Author" )</a>
+                                                </button>
+                                            </form>
+
+                                            <form method="post" asp-controller="AdminPage" asp-action="TogglePromoteToAdmin" asp-route-userId="@userWithRoles.User.Id">
+                                                <button type="submit" class="dropdown-item">
+                                                    <a>@(userWithRoles.Roles.Contains("Admin") ? "Take Admin rights" : "Promote to Admin" )</a>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                                
+                                <td>
+                                    <div class="text-danger">
+                                        @(userWithRoles.User.IsMuted ? "Muted" : "")
+                                    </div>
+                                </td>
+
+                                 <td>
+                                    <div class="text-danger">
+                                        @(userWithRoles.User.IsActive ? "" : "Banned")
+                                    </div>
+                                </td>
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
+            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+            crossorigin="anonymous"></script>
+
+@functions {
+    public class UserWithRoles
+    {
+        public User User { get; set; }
+        public IEnumerable<string> Roles { get; set; }
+    }
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(function (toggle) {
+                toggle.addEventListener('click', function () {
+                    var dropdownMenu = this.nextElementSibling;
+                    if (!dropdownMenu.classList.contains('show')) {
+                        dropdownMenu.classList.add('show');
+                    } else {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!event.target.closest('.dropdown')) {
+                    var dropdownMenus = document.querySelectorAll('.dropdown-menu');
+                    dropdownMenus.forEach(function (menu) {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,10 @@
+{
+    "files.exclude": {
+        "**/LearnEase.Core/bin": true,
+        "**/LearnEase.Core/obj": true,
+        "**/LearnEase.Infrastructure/bin": true,
+        "**/LearnEase.Infrastructure/obj": true,
+        "**/LearnEase.Presentation/bin": true,
+        "**/LearnEase.Presentation/obj": true
+    }
+}

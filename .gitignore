@@ -380,6 +380,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # VS Code files for those working on multiple tools
+LearnEase/src/**/.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
