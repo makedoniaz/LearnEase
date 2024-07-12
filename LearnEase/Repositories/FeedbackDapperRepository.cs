@@ -7,8 +7,14 @@ namespace LearnEase.Repositories
 {
     public class FeedbackDapperRepository : IFeedbackRepository
     {
-        private readonly string connectionString = "Server=localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin; Password=admin";
+        private readonly string connectionString;
         
+
+        public FeedbackDapperRepository(IConfiguration config)
+        {
+            this.connectionString = config.GetConnectionString("MsSql") ?? "";
+        }
+
         public async Task<Feedback> GetById(int id)
         {
             using var connection = new SqlConnection(connectionString);

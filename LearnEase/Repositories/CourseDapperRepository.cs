@@ -7,7 +7,12 @@ namespace LearnEase.Repositories
 {
     public class CourseDapperRepository : ICourseRepository
     {
-        private readonly string connectionString = "Server=localhost; Database=LearnEase; TrustServerCertificate=True; Trusted_Connection=True; User Id=admin; Password=admin";
+        private readonly string connectionString;
+
+        public CourseDapperRepository(IConfiguration config)
+        {
+            this.connectionString = config.GetConnectionString("MsSql") ?? "";
+        }
 
         public async Task<IEnumerable<Course>> GetAllAsync()
         {
