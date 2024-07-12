@@ -10,5 +10,5 @@ public class Course
 
     public int? AmountOfLectures { get; set; }
 
-    public DateTime? CreationDate { get; set; }
+    public DateTime CreationDate { get; set; }
 }

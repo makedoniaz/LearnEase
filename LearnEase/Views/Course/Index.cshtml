@@ -1,21 +1,27 @@
 @using System.Text.Json
 
-@{
-    var coursesJson = await System.IO.File.ReadAllTextAsync("Assets/courses.json");
-
-    var courses = JsonSerializer.Deserialize<IEnumerable<Course>>(coursesJson, new JsonSerializerOptions {
-        PropertyNameCaseInsensitive = true,
-    });
-
-    courses = courses ?? new List<Course>();
-}
+@model IEnumerable<Course>;
 
 <style>
     .shadow {
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     }
 
-    .index-header {
+    .round {
+        border: 1px solid #d3d3d3;
+        border-radius: 15px;
+    }
+
+    .courses-action {
+        margin-bottom: 100px;
+    }
+
+    .courses-create-form {
+        width: 500px;
+        padding: 30px;
+    }
+
+    .main-header {
         margin-bottom: 50px;
     }
 
@@ -41,97 +47,55 @@
         color: #505050;
     }
 
-
-
-
-    .courses-action {
-        margin-bottom: 100px;
-    }
-
-    .courses-action-form {
-        width: 500px;
-        
-
-       
-        padding: 30px;
-    }
-
-    .form-item  {
-        margin-bottom: 20px;
-    }
-    
-    .form-item input {
-        width: 100%;
-        padding: 12px;
-
-        border: solid 1px;
-        border-radius: 10px;
-        font-size: 17px;
-    }
-
-    .form-item .item-label {
-        font-size: 19px;
-        margin-bottom: 10px;
-    }
-
-    .form-btn {
-        font-size: 20px;
-        background-color: transparent;
-        color: black;
-        padding: 12px 36px;
-
-        margin-top: 20px;
-
-        border: solid 1px;
-        border-radius: 10px;
+    .courses-create-form {
+        padding: 25px;
     }
 
 </style>
 
 <div>
     <div class="courses-action"> 
-        <div class="index-header">
+        <div class="main-header">
                 <h1>Create course</h1>
         </div>
 
-        <div class="courses-action-form shadow">
-            
+        <div class="courses-create-form round">
             <form action="/Course" method="post">
-                <div class="form-item">
+                <div class="form-item mb-4">
                     <div class="item-label">
-                        <label>Name</label>
+                        <label class="h5 mb-2 text-dark">Name:</label>
                     </div>
-                    <input type="text" name="Name">
+                    <input class="form-control" type="text" name="Name" required maxlength="100">
                 </div>
 
-                <div class="form-item">
+                <div class="form-item mb-4">
                     <div class="item-label">
-                        <label>Description</label>
+                        <label class="h5 mb-2 text-dark">Description:</label>
                     </div>
-                    <input type="text" name="Description">
+                    <input class="form-control" type="text" name="Description" required maxlength="500">
                 </div>
 
-                <div class="form-item">
+                <div class="form-item mb-4">
                     <div class="item-label">
-                        <label>Amount of lectures</label>
+                        <label class="h5 mb-2 text-dark">Amount of lectures:</label>
                     </div>
-                    <input type="number" name="AmountOfLectures">
+                    <input class="form-control" type="number" name="AmountOfLectures" required min="1">
                 </div>
 
-                <button class="form-btn">Create</button>
+                <button class="form-btn btn btn-dark px-4 btn-lg">Create</button>
             </form>
         </div>
     </div>
     
     <div class="courses-info">
-        <div class="index-header">
+        <div class="main-header">
             <h1>All courses</h1>
         </div>
 
         <div class="courses-list">
-            @foreach (var course in courses)
+            @foreach (var course in Model)
             {
-                <div class="list-item shadow">
+                <div class="list-item round">
                     <div class="item-name">
                         <h3>@(course?.Name)</h3>
                     </div>
@@ -141,9 +105,11 @@
                     <div class="item-lect-amount">
                         Amount of lectures: @(course?.AmountOfLectures ?? 0)
                     </div>
-                    <div class="item-date">
+                    <div class="item-date mb-4">
                         @(course?.CreationDate.ToString() ?? "UNKNOWN")
                     </div>
+
+                    <a href="/Feedback/@(course?.Id)" class="btn btn-secondary btn-dark active item-button px-4" role="button" aria-pressed="true">Feedbacks</a>
                 </div>
             }
         </div>
