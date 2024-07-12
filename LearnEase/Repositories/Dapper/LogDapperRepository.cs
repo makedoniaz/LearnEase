@@ -3,7 +3,7 @@ using Dapper;
 using LearnEase.Models;
 using LearnEase.Repositories.Interfaces;
 
-namespace LearnEase.Repositories
+namespace LearnEase.Repositories.Dapper
 {
     public class LogDapperRepository : ILogRepository
     {
@@ -14,7 +14,7 @@ namespace LearnEase.Repositories
             this.connectionString = config.GetConnectionString("MsSql") ?? "";
         }
 
-        public async Task CreateAsync(Log log)
+        public async Task<int> CreateAsync(Log log)
         {
             using var connection = new SqlConnection(connectionString);
             var affectedRowsCount = await connection.ExecuteAsync(
@@ -23,8 +23,7 @@ namespace LearnEase.Repositories
                 param: log
             );
 
-            if (affectedRowsCount <= 0)
-                throw new Exception("Insert error!");
+            return affectedRowsCount;
         }
     }
 }

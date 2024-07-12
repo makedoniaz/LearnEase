@@ -6,8 +6,6 @@ namespace LearnEase.Services
 {
     public class FeedbackService : IFeedbackService
     {
-        public int CurrentCourseId { get; set; }
-
         private readonly IFeedbackRepository feedbackRepository;
 
         public FeedbackService(IFeedbackRepository feedbackRepository) {
@@ -16,38 +14,43 @@ namespace LearnEase.Services
 
         public async Task<Feedback> GetFeedbackById(int id)
         {
-            return await feedbackRepository.GetById(id);
+            var feedback = await feedbackRepository.GetByIdAsync(id);
+
+            if (feedback is null)
+                throw new ArgumentException($"Cannot find feedback by id: {id}.");
+
+            return feedback;
         }
 
         public async Task PutFeedbackAsync(int id, Feedback feedback)
         {
-            var props = feedback.GetType().GetProperties().Where(p => p.Name != "Rating");
-            bool isNullInput = !props.All(p => p.GetValue(feedback) != null);
+            var changesCount = await feedbackRepository.PutAsync(id, feedback);
 
-            if (isNullInput)
-                throw new ArgumentNullException(nameof(feedback));
-
-            feedback.CreationDate = DateTime.Now;
-
-            await feedbackRepository.PutAsync(id, feedback);
+            if (changesCount == 0)
+                throw new Exception("Feedback change didn't apply!");
         }
 
-        public async Task CreateFeedbackAsync(Feedback feedback)
+        public async Task CreateFeedbackAsync(Feedback feedback, int courseId)
         {
             feedback.CreationDate = DateTime.Now;
-            feedback.CourseId = this.CurrentCourseId;
+            feedback.CourseId = courseId;
 
-            await feedbackRepository.CreateAsync(feedback);
+            var changesCount = await feedbackRepository.CreateAsync(feedback);
+
+            if (changesCount == 0)
+                throw new Exception("Feedback creation didn't apply!");
         }
 
         public async Task DeleteFeedbackAsync(int id)
         {
-            await feedbackRepository.DeleteAsync(id);
+            var changesCount = await feedbackRepository.DeleteAsync(id);
+
+            if (changesCount == 0)
+                throw new Exception("Feedback delete didn't apply!");
         }
 
         public async Task<IEnumerable<Feedback>> GetAllFeedbacksByCourseIdAsync(int courseId)
         {
-            CurrentCourseId = courseId;
             return await feedbackRepository.GetAllByCourseIdAsync(courseId);
         }
     }

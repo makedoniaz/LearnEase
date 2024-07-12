@@ -25,7 +25,21 @@ namespace LearnEase.Services
 
             newCourse.CreationDate = DateTime.Now;
 
-            await this.courseRepository.CreateAsync(newCourse);
+            var changesCount = await this.courseRepository.CreateAsync(newCourse);
+
+            if (changesCount == 0)
+                throw new Exception("Course creation didn't apply!");
+        }
+
+        public async Task SetCourseLogo(Course course, IFormFile? logo) {
+            if (logo is null)
+                return;
+
+            var extension = new FileInfo(logo.FileName).Extension[1..];
+            course.CourseLogoPath = $"Assets/Logos/{course.Id}.{extension}";
+
+            using var newFileStream = File.Create(course.CourseLogoPath);
+            await logo.CopyToAsync(newFileStream);
         }
     }
 }

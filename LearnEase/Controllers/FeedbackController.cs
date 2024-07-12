@@ -1,7 +1,6 @@
-using System.Text.Json;
+using FluentValidation;
 using LearnEase.Models;
 using LearnEase.Services.Interfaces;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnEase.Controllers;
@@ -11,9 +10,12 @@ public class FeedbackController : Controller
 {
     private readonly IFeedbackService feedbackService;
 
-    public FeedbackController(IFeedbackService feedbackService)
+    private readonly IValidator<Feedback> validator;
+
+    public FeedbackController(IFeedbackService feedbackService, IValidator<Feedback> validator)
     {
         this.feedbackService = feedbackService;
+        this.validator = validator;
     }
 
     [HttpGet("{courseId:int}")]
@@ -21,6 +23,8 @@ public class FeedbackController : Controller
         try
         {
             var feedbacks = await this.feedbackService.GetAllFeedbacksByCourseIdAsync(courseId);
+            TempData["courseId"] = courseId;
+
             return View(feedbacks);
         }
         catch(Exception ex)
@@ -29,11 +33,25 @@ public class FeedbackController : Controller
         }
     }
 
-    [HttpPost]
+    [HttpGet("[action]", Name = "CreateFeedbackView")]
+    public IActionResult Create() {
+        return View("FeedbackCreateMenu");
+    }
+
+    [HttpPost(Name = "CreateFeedbackApi")]
     public async Task<IActionResult> Create(Feedback newFeedback) {
         try {
-            await this.feedbackService.CreateFeedbackAsync(newFeedback);
-            return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = feedbackService.CurrentCourseId });
+            var validationResult = await validator.ValidateAsync(newFeedback);
+
+            if (!validationResult.IsValid) {
+                foreach(var error in validationResult.Errors)
+                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                
+                return base.View("FeedbackCreateMenu");
+            }
+
+            await this.feedbackService.CreateFeedbackAsync(newFeedback, (int)TempData["courseId"]);
+            return base.RedirectToAction(actionName: "GetFeedbacks", routeValues: new { courseId = TempData["courseId"] });
         }
         catch (Exception ex) {
             return BadRequest(ex.Message);
@@ -44,17 +62,22 @@ public class FeedbackController : Controller
     public async Task<IActionResult> GetFeedbackChangeMenu(int feedbackId) {
         var feedback = await feedbackService.GetFeedbackById(feedbackId);
 
-        return View("FeedbackChangeMenu", feedback);
+        return base.View("FeedbackChangeMenu", feedback);
     }
 
     [HttpPut("{feedbackId:int}")]
-    public async Task<IActionResult> Change(int feedbackId,[FromBody] Feedback feedback)
+    public async Task<IActionResult> Change(int feedbackId, [FromBody]Feedback feedback)
     {
         try
         {
-            // var streamReader = new StreamReader(Request.Body);
-            // var requestBody = await streamReader.ReadToEndAsync();
-            // var newFeedback = JsonSerializer.Deserialize<Feedback>(requestBody);
+            var validationResult = await validator.ValidateAsync(feedback);
+
+            if (!validationResult.IsValid) {
+                foreach(var error in validationResult.Errors)
+                    base.ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                
+                return BadRequest(base.ModelState);
+            }
 
             await this.feedbackService.PutFeedbackAsync(feedbackId, feedback);
             return Ok();

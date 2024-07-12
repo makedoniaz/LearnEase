@@ -7,5 +7,7 @@ namespace LearnEase.Services.Interfaces
         Task<IEnumerable<Course>> GetAllCoursesAsync();
         
         Task CreateCourseAsync(Course newCourse);
+
+        Task SetCourseLogo(Course course, IFormFile? logo);
     }
 }
